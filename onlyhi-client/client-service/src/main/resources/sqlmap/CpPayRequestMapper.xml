@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.CpPayRequestMapper">
+    <resultMap id="CpPayRequestResultMap" type="cn.onlyhi.client.po.CpPayRequest">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="parent_order_no" jdbcType="VARCHAR" property="parentOrderNo" />
+        <result column="course_order_uuid" jdbcType="VARCHAR" property="courseOrderUuid" />
+        <result column="course_price_uuid" jdbcType="VARCHAR" property="coursePriceUuid" />
+        <result column="promotion_code_uuid" jdbcType="VARCHAR" property="promotionCodeUuid" />
+        <result column="ga_user_uuid" jdbcType="VARCHAR" property="gaUserUuid" />
+        <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
+        <result column="leads_uuid" jdbcType="VARCHAR" property="leadsUuid" />
+        <result column="buy_length" jdbcType="VARCHAR" property="buyLength" />
+        <result column="course_level" jdbcType="TINYINT" property="courseLevel" />
+        <result column="money" jdbcType="VARCHAR" property="money" />
+        <result column="in_activities" jdbcType="VARCHAR" property="inActivities" />
+        <result column="pay_type" jdbcType="VARCHAR" property="payType" />
+        <result column="bank" jdbcType="VARCHAR" property="bank" />
+        <result column="charge_id" jdbcType="VARCHAR" property="chargeId" />
+        <result column="transaction_no" jdbcType="VARCHAR" property="transactionNo" />
+        <result column="already_pay" jdbcType="DOUBLE" property="alreadyPay" />
+        <result column="pending_pay" jdbcType="DOUBLE" property="pendingPay" />
+        <result column="payer" jdbcType="VARCHAR" property="payer" />
+        <result column="pay_time" jdbcType="VARCHAR" property="payTime" />
+        <result column="check_time" jdbcType="TIMESTAMP" property="checkTime" />
+        <result column="is_pay" jdbcType="TINYINT" property="isPay" />
+        <result column="check_reamrk" jdbcType="VARCHAR" property="checkReamrk" />
+        <result column="real_user_uuid" jdbcType="VARCHAR" property="realUserUuid" />
+        <result column="web_order_no" jdbcType="VARCHAR" property="webOrderNo" />
+        <result column="pay_channel" jdbcType="TINYINT" property="payChannel" />
+        <result column="is_merge" jdbcType="BIT" property="isMerge" />
+        <result column="status" jdbcType="BIT" property="status" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="is_split" jdbcType="BIT" property="isSplit" />
+        <result column="residue_length" jdbcType="VARCHAR" property="residueLength" />
+        <result column="team_uuid" jdbcType="VARCHAR" property="teamUuid" />
+        <result column="pingpp_channel" jdbcType="VARCHAR" property="pingppChannel" />
+        <result column="baidu_code" jdbcType="VARCHAR" property="baiduCode" />
+        <result column="patriarch_name" jdbcType="VARCHAR" property="patriarchName" />
+        <result column="patriarch_phone" jdbcType="VARCHAR" property="patriarchPhone" />
+    </resultMap>
+    <sql id="CpPayRequest_Column_List">
+        id, uuid, order_no, parent_order_no, course_order_uuid, course_price_uuid, promotion_code_uuid, 
+        ga_user_uuid, user_uuid, leads_uuid, buy_length, course_level, money, in_activities, 
+        pay_type, bank, charge_id, transaction_no, already_pay, pending_pay, payer, pay_time, 
+        check_time, is_pay, check_reamrk, real_user_uuid, web_order_no, pay_channel, is_merge, 
+        status, create_date, update_date, is_split, residue_length, team_uuid, pingpp_channel, 
+        baidu_code, patriarch_name, patriarch_phone
+    </sql>
+    <!-- 根据leadsUuid和课程级别查询总课时 -->
+    <select id="findCourseTimeByLeadsUuidAndCourseLevel" resultType="java.lang.Double">
+        select
+          IFNULL(SUM(convert(buy_length,decimal(6,1))),0.0)
+        from cp_pay_request where leads_uuid=#{leadsUuid} and course_level=#{courseLevel}
+    </select>
+    <update id="closeNoPayOrderByCoursePriceUuidAndLeadsUuid">
+        update cp_pay_request set status=0
+        where pay_channel=2 and is_pay=0 and status=1 and course_price_uuid=#{coursePriceUuid} and leads_uuid=#{leadsUuid}
+    </update>
+    <update id="closeNoPayOrder">
+        update cp_pay_request set status=0
+        where pay_channel=2 and is_pay=0 and status=1 and DATE_FORMAT(create_date,'%Y-%m-%d') <![CDATA[  <  ]]> curdate()
+    </update>
+    <select id="findOrderListByUserUuid" parameterType="java.lang.String" resultMap="CpPayRequestResultMap">
+        select
+        <include refid="CpPayRequest_Column_List"/>
+        from cp_pay_request
+        where status=1 and pay_type='baiduStaging' and is_pay=1 and user_uuid=#{user_uuid}
+    </select>
+    <select id="findOrderByChargeId" parameterType="java.lang.String" resultMap="CpPayRequestResultMap">
+        select
+        <include refid="CpPayRequest_Column_List"/>
+        from cp_pay_request
+        where charge_id = #{chargeId} and status=1 and pay_type='pingpp'
+    </select>
+    <select id="countOrderList" resultType="java.lang.Integer">
+        select
+        count(*)
+        from cp_pay_request
+        where pay_channel=2 and leads_uuid = #{leadsUuid}
+        <if test="isPay!=null">
+            and is_pay=#{isPay}
+        </if>
+        <if test="status!=null">
+            and status=#{status}
+        </if>
+    </select>
+    <select id="findOrderList" resultType="cn.onlyhi.client.dto.OrderListDto">
+        select
+        pr.uuid as orderUuid
+        ,pr.order_no
+        ,cp.type
+        ,pr.buy_length as length
+        ,pr.money
+        ,pr.create_date
+        ,pr.pay_time
+        ,pr.is_pay
+        ,pr.status
+        ,cp.original_price
+        from cp_pay_request pr
+        inner join cp_course_price cp on cp.uuid=pr.course_price_uuid
+        where pr.pay_channel=2 and pr.leads_uuid = #{leadsUuid}
+        <if test="isPay!=null">
+            and pr.is_pay=#{isPay}
+        </if>
+        <if test="status!=null">
+            and pr.status=#{status}
+        </if>
+        order by pr.create_date desc
+        limit #{startSize},#{pageSize}
+    </select>
+    <select id="findPayRequestByOrderNo" parameterType="java.lang.String" resultMap="CpPayRequestResultMap">
+        select
+        <include refid="CpPayRequest_Column_List"/>
+        from cp_pay_request
+        where order_no=#{orderNo}
+    </select>
+    <select id="findOrderByOrderUuid" parameterType="java.lang.String" resultType="cn.onlyhi.client.dto.OrderListDto">
+        select
+        pr.uuid as orderUuid
+        ,pr.order_no
+        ,cp.type
+        ,pr.buy_length as length
+        ,pr.money
+        ,pr.create_date
+        ,pr.pay_time
+        ,cp.baidu_course_code
+        from cp_pay_request pr
+        left join cp_course_price cp on cp.uuid=pr.course_price_uuid
+        where pr.uuid=#{orderUuid}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="CpPayRequestResultMap">
+        select 
+        <include refid="CpPayRequest_Column_List" />
+        from cp_pay_request
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from cp_pay_request
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.CpPayRequest">
+        insert into cp_pay_request
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="parentOrderNo != null">
+                parent_order_no,
+            </if>
+            <if test="courseOrderUuid != null">
+                course_order_uuid,
+            </if>
+            <if test="coursePriceUuid != null">
+                course_price_uuid,
+            </if>
+            <if test="promotionCodeUuid != null">
+                promotion_code_uuid,
+            </if>
+            <if test="gaUserUuid != null">
+                ga_user_uuid,
+            </if>
+            <if test="userUuid != null">
+                user_uuid,
+            </if>
+            <if test="leadsUuid != null">
+                leads_uuid,
+            </if>
+            <if test="buyLength != null">
+                buy_length,
+            </if>
+            <if test="courseLevel != null">
+                course_level,
+            </if>
+            <if test="money != null">
+                money,
+            </if>
+            <if test="inActivities != null">
+                in_activities,
+            </if>
+            <if test="payType != null">
+                pay_type,
+            </if>
+            <if test="bank != null">
+                bank,
+            </if>
+            <if test="chargeId != null">
+                charge_id,
+            </if>
+            <if test="transactionNo != null">
+                transaction_no,
+            </if>
+            <if test="alreadyPay != null">
+                already_pay,
+            </if>
+            <if test="pendingPay != null">
+                pending_pay,
+            </if>
+            <if test="payer != null">
+                payer,
+            </if>
+            <if test="payTime != null">
+                pay_time,
+            </if>
+            <if test="checkTime != null">
+                check_time,
+            </if>
+            <if test="isPay != null">
+                is_pay,
+            </if>
+            <if test="checkReamrk != null">
+                check_reamrk,
+            </if>
+            <if test="realUserUuid != null">
+                real_user_uuid,
+            </if>
+            <if test="webOrderNo != null">
+                web_order_no,
+            </if>
+            <if test="payChannel != null">
+                pay_channel,
+            </if>
+            <if test="isMerge != null">
+                is_merge,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="isSplit != null">
+                is_split,
+            </if>
+            <if test="residueLength != null">
+                residue_length,
+            </if>
+            <if test="teamUuid != null">
+                team_uuid,
+            </if>
+            <if test="pingppChannel != null">
+                pingpp_channel,
+            </if>
+            <if test="baiduCode != null">
+                baidu_code,
+            </if>
+            <if test="patriarchName != null">
+                patriarch_name,
+            </if>
+            <if test="patriarchPhone != null">
+                patriarch_phone,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="parentOrderNo != null">
+                #{parentOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="courseOrderUuid != null">
+                #{courseOrderUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursePriceUuid != null">
+                #{coursePriceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionCodeUuid != null">
+                #{promotionCodeUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="gaUserUuid != null">
+                #{gaUserUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userUuid != null">
+                #{userUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsUuid != null">
+                #{leadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="buyLength != null">
+                #{buyLength,jdbcType=VARCHAR},
+            </if>
+            <if test="courseLevel != null">
+                #{courseLevel,jdbcType=TINYINT},
+            </if>
+            <if test="money != null">
+                #{money,jdbcType=VARCHAR},
+            </if>
+            <if test="inActivities != null">
+                #{inActivities,jdbcType=VARCHAR},
+            </if>
+            <if test="payType != null">
+                #{payType,jdbcType=VARCHAR},
+            </if>
+            <if test="bank != null">
+                #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="chargeId != null">
+                #{chargeId,jdbcType=VARCHAR},
+            </if>
+            <if test="transactionNo != null">
+                #{transactionNo,jdbcType=VARCHAR},
+            </if>
+            <if test="alreadyPay != null">
+                #{alreadyPay,jdbcType=DOUBLE},
+            </if>
+            <if test="pendingPay != null">
+                #{pendingPay,jdbcType=DOUBLE},
+            </if>
+            <if test="payer != null">
+                #{payer,jdbcType=VARCHAR},
+            </if>
+            <if test="payTime != null">
+                #{payTime,jdbcType=VARCHAR},
+            </if>
+            <if test="checkTime != null">
+                #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isPay != null">
+                #{isPay,jdbcType=TINYINT},
+            </if>
+            <if test="checkReamrk != null">
+                #{checkReamrk,jdbcType=VARCHAR},
+            </if>
+            <if test="realUserUuid != null">
+                #{realUserUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="webOrderNo != null">
+                #{webOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="payChannel != null">
+                #{payChannel,jdbcType=TINYINT},
+            </if>
+            <if test="isMerge != null">
+                #{isMerge,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isSplit != null">
+                #{isSplit,jdbcType=BIT},
+            </if>
+            <if test="residueLength != null">
+                #{residueLength,jdbcType=VARCHAR},
+            </if>
+            <if test="teamUuid != null">
+                #{teamUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="pingppChannel != null">
+                #{pingppChannel,jdbcType=VARCHAR},
+            </if>
+            <if test="baiduCode != null">
+                #{baiduCode,jdbcType=VARCHAR},
+            </if>
+            <if test="patriarchName != null">
+                #{patriarchName,jdbcType=VARCHAR},
+            </if>
+            <if test="patriarchPhone != null">
+                #{patriarchPhone,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.CpPayRequest">
+        update cp_pay_request
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="parentOrderNo != null">
+                parent_order_no = #{parentOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="courseOrderUuid != null">
+                course_order_uuid = #{courseOrderUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursePriceUuid != null">
+                course_price_uuid = #{coursePriceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionCodeUuid != null">
+                promotion_code_uuid = #{promotionCodeUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="gaUserUuid != null">
+                ga_user_uuid = #{gaUserUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userUuid != null">
+                user_uuid = #{userUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsUuid != null">
+                leads_uuid = #{leadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="buyLength != null">
+                buy_length = #{buyLength,jdbcType=VARCHAR},
+            </if>
+            <if test="courseLevel != null">
+                course_level = #{courseLevel,jdbcType=TINYINT},
+            </if>
+            <if test="money != null">
+                money = #{money,jdbcType=VARCHAR},
+            </if>
+            <if test="inActivities != null">
+                in_activities = #{inActivities,jdbcType=VARCHAR},
+            </if>
+            <if test="payType != null">
+                pay_type = #{payType,jdbcType=VARCHAR},
+            </if>
+            <if test="bank != null">
+                bank = #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="chargeId != null">
+                charge_id = #{chargeId,jdbcType=VARCHAR},
+            </if>
+            <if test="transactionNo != null">
+                transaction_no = #{transactionNo,jdbcType=VARCHAR},
+            </if>
+            <if test="alreadyPay != null">
+                already_pay = #{alreadyPay,jdbcType=DOUBLE},
+            </if>
+            <if test="pendingPay != null">
+                pending_pay = #{pendingPay,jdbcType=DOUBLE},
+            </if>
+            <if test="payer != null">
+                payer = #{payer,jdbcType=VARCHAR},
+            </if>
+            <if test="payTime != null">
+                pay_time = #{payTime,jdbcType=VARCHAR},
+            </if>
+            <if test="checkTime != null">
+                check_time = #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isPay != null">
+                is_pay = #{isPay,jdbcType=TINYINT},
+            </if>
+            <if test="checkReamrk != null">
+                check_reamrk = #{checkReamrk,jdbcType=VARCHAR},
+            </if>
+            <if test="realUserUuid != null">
+                real_user_uuid = #{realUserUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="webOrderNo != null">
+                web_order_no = #{webOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="payChannel != null">
+                pay_channel = #{payChannel,jdbcType=TINYINT},
+            </if>
+            <if test="isMerge != null">
+                is_merge = #{isMerge,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isSplit != null">
+                is_split = #{isSplit,jdbcType=BIT},
+            </if>
+            <if test="residueLength != null">
+                residue_length = #{residueLength,jdbcType=VARCHAR},
+            </if>
+            <if test="teamUuid != null">
+                team_uuid = #{teamUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="pingppChannel != null">
+                pingpp_channel = #{pingppChannel,jdbcType=VARCHAR},
+            </if>
+            <if test="baiduCode != null">
+                baidu_code = #{baiduCode,jdbcType=VARCHAR},
+            </if>
+            <if test="patriarchName != null">
+                patriarch_name = #{patriarchName,jdbcType=VARCHAR},
+            </if>
+            <if test="patriarchPhone != null">
+                patriarch_phone = #{patriarchPhone,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="CpPayRequestResultMap">
+        select 
+        <include refid="CpPayRequest_Column_List" />
+        from cp_pay_request
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.CpPayRequest">
+        update cp_pay_request
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="parentOrderNo != null">
+                parent_order_no = #{parentOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="courseOrderUuid != null">
+                course_order_uuid = #{courseOrderUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursePriceUuid != null">
+                course_price_uuid = #{coursePriceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionCodeUuid != null">
+                promotion_code_uuid = #{promotionCodeUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="gaUserUuid != null">
+                ga_user_uuid = #{gaUserUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userUuid != null">
+                user_uuid = #{userUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsUuid != null">
+                leads_uuid = #{leadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="buyLength != null">
+                buy_length = #{buyLength,jdbcType=VARCHAR},
+            </if>
+            <if test="courseLevel != null">
+                course_level = #{courseLevel,jdbcType=TINYINT},
+            </if>
+            <if test="money != null">
+                money = #{money,jdbcType=VARCHAR},
+            </if>
+            <if test="inActivities != null">
+                in_activities = #{inActivities,jdbcType=VARCHAR},
+            </if>
+            <if test="payType != null">
+                pay_type = #{payType,jdbcType=VARCHAR},
+            </if>
+            <if test="bank != null">
+                bank = #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="chargeId != null">
+                charge_id = #{chargeId,jdbcType=VARCHAR},
+            </if>
+            <if test="transactionNo != null">
+                transaction_no = #{transactionNo,jdbcType=VARCHAR},
+            </if>
+            <if test="alreadyPay != null">
+                already_pay = #{alreadyPay,jdbcType=DOUBLE},
+            </if>
+            <if test="pendingPay != null">
+                pending_pay = #{pendingPay,jdbcType=DOUBLE},
+            </if>
+            <if test="payer != null">
+                payer = #{payer,jdbcType=VARCHAR},
+            </if>
+            <if test="payTime != null">
+                pay_time = #{payTime,jdbcType=VARCHAR},
+            </if>
+            <if test="checkTime != null">
+                check_time = #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isPay != null">
+                is_pay = #{isPay,jdbcType=TINYINT},
+            </if>
+            <if test="checkReamrk != null">
+                check_reamrk = #{checkReamrk,jdbcType=VARCHAR},
+            </if>
+            <if test="realUserUuid != null">
+                real_user_uuid = #{realUserUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="webOrderNo != null">
+                web_order_no = #{webOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="payChannel != null">
+                pay_channel = #{payChannel,jdbcType=TINYINT},
+            </if>
+            <if test="isMerge != null">
+                is_merge = #{isMerge,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isSplit != null">
+                is_split = #{isSplit,jdbcType=BIT},
+            </if>
+            <if test="residueLength != null">
+                residue_length = #{residueLength,jdbcType=VARCHAR},
+            </if>
+            <if test="teamUuid != null">
+                team_uuid = #{teamUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="pingppChannel != null">
+                pingpp_channel = #{pingppChannel,jdbcType=VARCHAR},
+            </if>
+            <if test="baiduCode != null">
+                baidu_code = #{baiduCode,jdbcType=VARCHAR},
+            </if>
+            <if test="patriarchName != null">
+                patriarch_name = #{patriarchName,jdbcType=VARCHAR},
+            </if>
+            <if test="patriarchPhone != null">
+                patriarch_phone = #{patriarchPhone,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

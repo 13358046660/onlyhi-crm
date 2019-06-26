@@ -1,0 +1,853 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.TcTeacherMapper">
+    <resultMap id="TcTeacherResultMap" type="cn.onlyhi.client.po.TcTeacher">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="training_question_number" jdbcType="VARCHAR" property="trainingQuestionNumber" />
+        <result column="training_account_id" jdbcType="BIGINT" property="trainingAccountId" />
+        <result column="tc_name" jdbcType="VARCHAR" property="tcName" />
+        <result column="open_id" jdbcType="VARCHAR" property="openId" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="sex" jdbcType="INTEGER" property="sex" />
+        <result column="invitation_date" jdbcType="TIMESTAMP" property="invitationDate" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="invitation_uuid" jdbcType="VARCHAR" property="invitationUuid" />
+        <result column="branch" jdbcType="VARCHAR" property="branch" />
+        <result column="interview_schedule_id" jdbcType="BIGINT" property="interviewScheduleId" />
+        <result column="nature_of_work" jdbcType="INTEGER" property="natureOfWork" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="qq" jdbcType="VARCHAR" property="qq" />
+        <result column="wechat" jdbcType="VARCHAR" property="wechat" />
+        <result column="id_number" jdbcType="CHAR" property="idNumber" />
+        <result column="major" jdbcType="VARCHAR" property="major" />
+        <result column="pay_grade" jdbcType="INTEGER" property="payGrade" />
+        <result column="hourly_wage" jdbcType="INTEGER" property="hourlyWage" />
+        <result column="school_location" jdbcType="VARCHAR" property="schoolLocation" />
+        <result column="grade" jdbcType="VARCHAR" property="grade" />
+        <result column="education" jdbcType="INTEGER" property="education" />
+        <result column="highest_education" jdbcType="INTEGER" property="highestEducation" />
+        <result column="province" jdbcType="CHAR" property="province" />
+        <result column="city" jdbcType="CHAR" property="city" />
+        <result column="district" jdbcType="CHAR" property="district" />
+        <result column="arts_or_science" jdbcType="INTEGER" property="artsOrScience" />
+        <result column="subject" jdbcType="VARCHAR" property="subject" />
+        <result column="teaching_subject" jdbcType="VARCHAR" property="teachingSubject" />
+        <result column="second_subject" jdbcType="VARCHAR" property="secondSubject" />
+        <result column="third_subject" jdbcType="VARCHAR" property="thirdSubject" />
+        <result column="grade_preference" jdbcType="VARCHAR" property="gradePreference" />
+        <result column="have_video" jdbcType="INTEGER" property="haveVideo" />
+        <result column="agent_type" jdbcType="INTEGER" property="agentType" />
+        <result column="agent_uuid" jdbcType="VARCHAR" property="agentUuid" />
+        <result column="bank" jdbcType="VARCHAR" property="bank" />
+        <result column="bank_address" jdbcType="VARCHAR" property="bankAddress" />
+        <result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
+        <result column="teacher_status" jdbcType="INTEGER" property="teacherStatus" />
+        <result column="is_pass" jdbcType="INTEGER" property="isPass" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="enabled" jdbcType="INTEGER" property="enabled" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
+        <result column="version" jdbcType="BIGINT" property="version" />
+        <result column="referral" jdbcType="VARCHAR" property="referral" />
+        <result column="inventory_date" jdbcType="TIMESTAMP" property="inventoryDate" />
+        <result column="interview_date" jdbcType="TIMESTAMP" property="interviewDate" />
+        <result column="teacher_notes" jdbcType="VARCHAR" property="teacherNotes" />
+        <result column="register_remark" jdbcType="VARCHAR" property="registerRemark" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="emergency_phone" jdbcType="VARCHAR" property="emergencyPhone" />
+        <result column="emergency_relation" jdbcType="VARCHAR" property="emergencyRelation" />
+    </resultMap>
+    <sql id="TcTeacher_Column_List">
+        id, uuid, training_question_number, training_account_id, tc_name, open_id, password,
+        sex, invitation_date, update_time, invitation_uuid, branch, interview_schedule_id,
+        nature_of_work, phone, email, qq, wechat, id_number, major, pay_grade, hourly_wage,
+        school_location, grade, education, highest_education, province, city, district, arts_or_science,
+        subject, teaching_subject, second_subject, third_subject, grade_preference, have_video,
+        agent_type, agent_uuid, bank, bank_address, card_number, teacher_status, is_pass,
+        remark, enabled, create_date, create_user_id, update_date, update_user_id, version,
+        referral, inventory_date, interview_date, teacher_notes, register_remark, address,
+        emergency_phone, emergency_relation
+    </sql>
+    <select id="findInfoByUuid" parameterType="java.lang.String" resultType="cn.onlyhi.client.dto.TeacherDto">
+        select
+          t.id as teacherId
+          ,t.wechat
+          ,t.qq
+          ,t.email
+          ,t.arts_or_science
+          ,t.education
+          ,t.highest_education
+          ,t.major
+          ,t.grade
+          ,t.id_number
+          ,t.card_number
+          ,t.bank_address
+          ,t.grade_preference as grade_preference_value
+          ,se4.enum_name as grade_preference_name
+          ,t.phone
+          ,t.sex
+          ,t.tc_name as teacherName
+          ,t.emergency_phone
+          ,t.emergency_relation
+          ,t.teaching_subject as teaching_subject_uuid
+          ,t.second_subject as second_subject_uuid
+          ,t.third_subject as third_subject_uuid
+          ,se1.enum_value as teaching_subject
+          ,se2.enum_value as second_subject
+          ,se3.enum_value as third_subject
+          ,t.province as provinceCode
+          ,t.city as cityCode
+          ,t.district as districtCode
+          ,concat(sa1.area_name,sa2.area_name,sa3.area_name) as examLocation
+          ,ts.uuid as teacherSchoolUuid
+          ,ts.school_name as teacherSchoolName
+        from tc_teacher t
+        left join sys_area sa1 on sa1.area_code=t.province
+        left join sys_area sa2 on sa2.area_code=t.city
+        left join sys_area sa3 on sa3.area_code=t.district
+        left join sys_enum se1 on se1.uuid=t.teaching_subject
+        left join sys_enum se2 on se2.uuid=t.second_subject
+        left join sys_enum se3 on se3.uuid=t.third_subject
+        left join sys_enum se4 on se4.enum_type=7 and se4.enum_value=t.grade_preference
+        left join tc_teacher_school ts on ts.uuid=t.school_location
+        where t.enabled=0 and t.uuid=#{teacherUuid}
+    </select>
+    <update id="updatePasswordByUuid">
+        UPDATE tc_teacher SET password=#{password} WHERE uuid=#{uuid}
+    </update>
+    <select id="selectByPhone" parameterType="java.lang.String" resultMap="TcTeacherResultMap">
+        select
+        <include refid="TcTeacher_Column_List"/>
+        from tc_teacher
+        where phone = #{phone,jdbcType=VARCHAR} and (teacher_status = 5 or teacher_status = 6) and enabled = 0
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="TcTeacherResultMap">
+        select
+        <include refid="TcTeacher_Column_List" />
+        from tc_teacher
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from tc_teacher
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.TcTeacher">
+        insert into tc_teacher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="trainingQuestionNumber != null">
+                training_question_number,
+            </if>
+            <if test="trainingAccountId != null">
+                training_account_id,
+            </if>
+            <if test="tcName != null">
+                tc_name,
+            </if>
+            <if test="openId != null">
+                open_id,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="invitationDate != null">
+                invitation_date,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="invitationUuid != null">
+                invitation_uuid,
+            </if>
+            <if test="branch != null">
+                branch,
+            </if>
+            <if test="interviewScheduleId != null">
+                interview_schedule_id,
+            </if>
+            <if test="natureOfWork != null">
+                nature_of_work,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="qq != null">
+                qq,
+            </if>
+            <if test="wechat != null">
+                wechat,
+            </if>
+            <if test="idNumber != null">
+                id_number,
+            </if>
+            <if test="major != null">
+                major,
+            </if>
+            <if test="payGrade != null">
+                pay_grade,
+            </if>
+            <if test="hourlyWage != null">
+                hourly_wage,
+            </if>
+            <if test="schoolLocation != null">
+                school_location,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="education != null">
+                education,
+            </if>
+            <if test="highestEducation != null">
+                highest_education,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="district != null">
+                district,
+            </if>
+            <if test="artsOrScience != null">
+                arts_or_science,
+            </if>
+            <if test="subject != null">
+                subject,
+            </if>
+            <if test="teachingSubject != null">
+                teaching_subject,
+            </if>
+            <if test="secondSubject != null">
+                second_subject,
+            </if>
+            <if test="thirdSubject != null">
+                third_subject,
+            </if>
+            <if test="gradePreference != null">
+                grade_preference,
+            </if>
+            <if test="haveVideo != null">
+                have_video,
+            </if>
+            <if test="agentType != null">
+                agent_type,
+            </if>
+            <if test="agentUuid != null">
+                agent_uuid,
+            </if>
+            <if test="bank != null">
+                bank,
+            </if>
+            <if test="bankAddress != null">
+                bank_address,
+            </if>
+            <if test="cardNumber != null">
+                card_number,
+            </if>
+            <if test="teacherStatus != null">
+                teacher_status,
+            </if>
+            <if test="isPass != null">
+                is_pass,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="enabled != null">
+                enabled,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="createUserId != null">
+                create_user_id,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="updateUserId != null">
+                update_user_id,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="referral != null">
+                referral,
+            </if>
+            <if test="inventoryDate != null">
+                inventory_date,
+            </if>
+            <if test="interviewDate != null">
+                interview_date,
+            </if>
+            <if test="teacherNotes != null">
+                teacher_notes,
+            </if>
+            <if test="registerRemark != null">
+                register_remark,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="emergencyPhone != null">
+                emergency_phone,
+            </if>
+            <if test="emergencyRelation != null">
+                emergency_relation,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="trainingQuestionNumber != null">
+                #{trainingQuestionNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="trainingAccountId != null">
+                #{trainingAccountId,jdbcType=BIGINT},
+            </if>
+            <if test="tcName != null">
+                #{tcName,jdbcType=VARCHAR},
+            </if>
+            <if test="openId != null">
+                #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="invitationDate != null">
+                #{invitationDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="invitationUuid != null">
+                #{invitationUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="branch != null">
+                #{branch,jdbcType=VARCHAR},
+            </if>
+            <if test="interviewScheduleId != null">
+                #{interviewScheduleId,jdbcType=BIGINT},
+            </if>
+            <if test="natureOfWork != null">
+                #{natureOfWork,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="qq != null">
+                #{qq,jdbcType=VARCHAR},
+            </if>
+            <if test="wechat != null">
+                #{wechat,jdbcType=VARCHAR},
+            </if>
+            <if test="idNumber != null">
+                #{idNumber,jdbcType=CHAR},
+            </if>
+            <if test="major != null">
+                #{major,jdbcType=VARCHAR},
+            </if>
+            <if test="payGrade != null">
+                #{payGrade,jdbcType=INTEGER},
+            </if>
+            <if test="hourlyWage != null">
+                #{hourlyWage,jdbcType=INTEGER},
+            </if>
+            <if test="schoolLocation != null">
+                #{schoolLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="education != null">
+                #{education,jdbcType=INTEGER},
+            </if>
+            <if test="highestEducation != null">
+                #{highestEducation,jdbcType=INTEGER},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=CHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=CHAR},
+            </if>
+            <if test="district != null">
+                #{district,jdbcType=CHAR},
+            </if>
+            <if test="artsOrScience != null">
+                #{artsOrScience,jdbcType=INTEGER},
+            </if>
+            <if test="subject != null">
+                #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="teachingSubject != null">
+                #{teachingSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="secondSubject != null">
+                #{secondSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="thirdSubject != null">
+                #{thirdSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="gradePreference != null">
+                #{gradePreference,jdbcType=VARCHAR},
+            </if>
+            <if test="haveVideo != null">
+                #{haveVideo,jdbcType=INTEGER},
+            </if>
+            <if test="agentType != null">
+                #{agentType,jdbcType=INTEGER},
+            </if>
+            <if test="agentUuid != null">
+                #{agentUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="bank != null">
+                #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="bankAddress != null">
+                #{bankAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="cardNumber != null">
+                #{cardNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherStatus != null">
+                #{teacherStatus,jdbcType=INTEGER},
+            </if>
+            <if test="isPass != null">
+                #{isPass,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="enabled != null">
+                #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId != null">
+                #{createUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                #{updateUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=BIGINT},
+            </if>
+            <if test="referral != null">
+                #{referral,jdbcType=VARCHAR},
+            </if>
+            <if test="inventoryDate != null">
+                #{inventoryDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="interviewDate != null">
+                #{interviewDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teacherNotes != null">
+                #{teacherNotes,jdbcType=VARCHAR},
+            </if>
+            <if test="registerRemark != null">
+                #{registerRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyPhone != null">
+                #{emergencyPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyRelation != null">
+                #{emergencyRelation,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.TcTeacher">
+        update tc_teacher
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="trainingQuestionNumber != null">
+                training_question_number = #{trainingQuestionNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="trainingAccountId != null">
+                training_account_id = #{trainingAccountId,jdbcType=BIGINT},
+            </if>
+            <if test="tcName != null">
+                tc_name = #{tcName,jdbcType=VARCHAR},
+            </if>
+            <if test="openId != null">
+                open_id = #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="invitationDate != null">
+                invitation_date = #{invitationDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="invitationUuid != null">
+                invitation_uuid = #{invitationUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="branch != null">
+                branch = #{branch,jdbcType=VARCHAR},
+            </if>
+            <if test="interviewScheduleId != null">
+                interview_schedule_id = #{interviewScheduleId,jdbcType=BIGINT},
+            </if>
+            <if test="natureOfWork != null">
+                nature_of_work = #{natureOfWork,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="qq != null">
+                qq = #{qq,jdbcType=VARCHAR},
+            </if>
+            <if test="wechat != null">
+                wechat = #{wechat,jdbcType=VARCHAR},
+            </if>
+            <if test="idNumber != null">
+                id_number = #{idNumber,jdbcType=CHAR},
+            </if>
+            <if test="major != null">
+                major = #{major,jdbcType=VARCHAR},
+            </if>
+            <if test="payGrade != null">
+                pay_grade = #{payGrade,jdbcType=INTEGER},
+            </if>
+            <if test="hourlyWage != null">
+                hourly_wage = #{hourlyWage,jdbcType=INTEGER},
+            </if>
+            <if test="schoolLocation != null">
+                school_location = #{schoolLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="education != null">
+                education = #{education,jdbcType=INTEGER},
+            </if>
+            <if test="highestEducation != null">
+                highest_education = #{highestEducation,jdbcType=INTEGER},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=CHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=CHAR},
+            </if>
+            <if test="district != null">
+                district = #{district,jdbcType=CHAR},
+            </if>
+            <if test="artsOrScience != null">
+                arts_or_science = #{artsOrScience,jdbcType=INTEGER},
+            </if>
+            <if test="subject != null">
+                subject = #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="teachingSubject != null">
+                teaching_subject = #{teachingSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="secondSubject != null">
+                second_subject = #{secondSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="thirdSubject != null">
+                third_subject = #{thirdSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="gradePreference != null">
+                grade_preference = #{gradePreference,jdbcType=VARCHAR},
+            </if>
+            <if test="haveVideo != null">
+                have_video = #{haveVideo,jdbcType=INTEGER},
+            </if>
+            <if test="agentType != null">
+                agent_type = #{agentType,jdbcType=INTEGER},
+            </if>
+            <if test="agentUuid != null">
+                agent_uuid = #{agentUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="bank != null">
+                bank = #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="bankAddress != null">
+                bank_address = #{bankAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="cardNumber != null">
+                card_number = #{cardNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherStatus != null">
+                teacher_status = #{teacherStatus,jdbcType=INTEGER},
+            </if>
+            <if test="isPass != null">
+                is_pass = #{isPass,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="enabled != null">
+                enabled = #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId != null">
+                create_user_id = #{createUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=BIGINT},
+            </if>
+            <if test="referral != null">
+                referral = #{referral,jdbcType=VARCHAR},
+            </if>
+            <if test="inventoryDate != null">
+                inventory_date = #{inventoryDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="interviewDate != null">
+                interview_date = #{interviewDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teacherNotes != null">
+                teacher_notes = #{teacherNotes,jdbcType=VARCHAR},
+            </if>
+            <if test="registerRemark != null">
+                register_remark = #{registerRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyPhone != null">
+                emergency_phone = #{emergencyPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyRelation != null">
+                emergency_relation = #{emergencyRelation,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="TcTeacherResultMap">
+        select
+        <include refid="TcTeacher_Column_List" />
+        from tc_teacher
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.TcTeacher">
+        update tc_teacher
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="trainingQuestionNumber != null">
+                training_question_number = #{trainingQuestionNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="trainingAccountId != null">
+                training_account_id = #{trainingAccountId,jdbcType=BIGINT},
+            </if>
+            <if test="tcName != null">
+                tc_name = #{tcName,jdbcType=VARCHAR},
+            </if>
+            <if test="openId != null">
+                open_id = #{openId,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="invitationDate != null">
+                invitation_date = #{invitationDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="invitationUuid != null">
+                invitation_uuid = #{invitationUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="branch != null">
+                branch = #{branch,jdbcType=VARCHAR},
+            </if>
+            <if test="interviewScheduleId != null">
+                interview_schedule_id = #{interviewScheduleId,jdbcType=BIGINT},
+            </if>
+            <if test="natureOfWork != null">
+                nature_of_work = #{natureOfWork,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="qq != null">
+                qq = #{qq,jdbcType=VARCHAR},
+            </if>
+            <if test="wechat != null">
+                wechat = #{wechat,jdbcType=VARCHAR},
+            </if>
+            <if test="idNumber != null">
+                id_number = #{idNumber,jdbcType=CHAR},
+            </if>
+            <if test="major != null">
+                major = #{major,jdbcType=VARCHAR},
+            </if>
+            <if test="payGrade != null">
+                pay_grade = #{payGrade,jdbcType=INTEGER},
+            </if>
+            <if test="hourlyWage != null">
+                hourly_wage = #{hourlyWage,jdbcType=INTEGER},
+            </if>
+            <if test="schoolLocation != null">
+                school_location = #{schoolLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="education != null">
+                education = #{education,jdbcType=INTEGER},
+            </if>
+            <if test="highestEducation != null">
+                highest_education = #{highestEducation,jdbcType=INTEGER},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=CHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=CHAR},
+            </if>
+            <if test="district != null">
+                district = #{district,jdbcType=CHAR},
+            </if>
+            <if test="artsOrScience != null">
+                arts_or_science = #{artsOrScience,jdbcType=INTEGER},
+            </if>
+            <if test="subject != null">
+                subject = #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="teachingSubject != null">
+                teaching_subject = #{teachingSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="secondSubject != null">
+                second_subject = #{secondSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="thirdSubject != null">
+                third_subject = #{thirdSubject,jdbcType=VARCHAR},
+            </if>
+            <if test="gradePreference != null">
+                grade_preference = #{gradePreference,jdbcType=VARCHAR},
+            </if>
+            <if test="haveVideo != null">
+                have_video = #{haveVideo,jdbcType=INTEGER},
+            </if>
+            <if test="agentType != null">
+                agent_type = #{agentType,jdbcType=INTEGER},
+            </if>
+            <if test="agentUuid != null">
+                agent_uuid = #{agentUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="bank != null">
+                bank = #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="bankAddress != null">
+                bank_address = #{bankAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="cardNumber != null">
+                card_number = #{cardNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherStatus != null">
+                teacher_status = #{teacherStatus,jdbcType=INTEGER},
+            </if>
+            <if test="isPass != null">
+                is_pass = #{isPass,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="enabled != null">
+                enabled = #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId != null">
+                create_user_id = #{createUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=BIGINT},
+            </if>
+            <if test="referral != null">
+                referral = #{referral,jdbcType=VARCHAR},
+            </if>
+            <if test="inventoryDate != null">
+                inventory_date = #{inventoryDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="interviewDate != null">
+                interview_date = #{interviewDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teacherNotes != null">
+                teacher_notes = #{teacherNotes,jdbcType=VARCHAR},
+            </if>
+            <if test="registerRemark != null">
+                register_remark = #{registerRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyPhone != null">
+                emergency_phone = #{emergencyPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyRelation != null">
+                emergency_relation = #{emergencyRelation,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

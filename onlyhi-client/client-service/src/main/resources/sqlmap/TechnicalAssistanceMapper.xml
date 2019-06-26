@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.TechnicalAssistanceMapper">
+    <resultMap id="TechnicalAssistanceResultMap" type="cn.onlyhi.client.po.TechnicalAssistance">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="technical_assistance_uuid" jdbcType="VARCHAR" property="technicalAssistanceUuid" />
+        <result column="assistance_uuid" jdbcType="VARCHAR" property="assistanceUuid" />
+        <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="user_type" jdbcType="VARCHAR" property="userType" />
+        <result column="issue" jdbcType="VARCHAR" property="issue" />
+        <result column="user_assistance_id" jdbcType="VARCHAR" property="userAssistanceId" />
+        <result column="user_assistance_pwd" jdbcType="VARCHAR" property="userAssistancePwd" />
+        <result column="assistance_status" jdbcType="INTEGER" property="assistanceStatus" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="create_uid" jdbcType="VARCHAR" property="createUid" />
+        <result column="update_uid" jdbcType="VARCHAR" property="updateUid" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+    </resultMap>
+    <sql id="TechnicalAssistance_Column_List">
+        id, technical_assistance_uuid, assistance_uuid, user_uuid, user_name, user_type, 
+        issue, user_assistance_id, user_assistance_pwd, assistance_status, status, create_time, 
+        update_time, create_uid, update_uid, remark, sort
+    </sql>
+    <select id="findByAssistanceUuidAndAssistanceStatus" resultMap="TechnicalAssistanceResultMap">
+        select
+        <include refid="TechnicalAssistance_Column_List" />
+        from technical_assistance
+        where status=1 and assistance_uuid = #{assistanceUuid} and assistance_status=#{assistanceStatus}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="TechnicalAssistanceResultMap">
+        select 
+        <include refid="TechnicalAssistance_Column_List" />
+        from technical_assistance
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from technical_assistance
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.TechnicalAssistance">
+        insert into technical_assistance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="technicalAssistanceUuid != null">
+                technical_assistance_uuid,
+            </if>
+            <if test="assistanceUuid != null">
+                assistance_uuid,
+            </if>
+            <if test="userUuid != null">
+                user_uuid,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="userType != null">
+                user_type,
+            </if>
+            <if test="issue != null">
+                issue,
+            </if>
+            <if test="userAssistanceId != null">
+                user_assistance_id,
+            </if>
+            <if test="userAssistancePwd != null">
+                user_assistance_pwd,
+            </if>
+            <if test="assistanceStatus != null">
+                assistance_status,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createUid != null">
+                create_uid,
+            </if>
+            <if test="updateUid != null">
+                update_uid,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="technicalAssistanceUuid != null">
+                #{technicalAssistanceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="assistanceUuid != null">
+                #{assistanceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userUuid != null">
+                #{userUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                #{userType,jdbcType=VARCHAR},
+            </if>
+            <if test="issue != null">
+                #{issue,jdbcType=VARCHAR},
+            </if>
+            <if test="userAssistanceId != null">
+                #{userAssistanceId,jdbcType=VARCHAR},
+            </if>
+            <if test="userAssistancePwd != null">
+                #{userAssistancePwd,jdbcType=VARCHAR},
+            </if>
+            <if test="assistanceStatus != null">
+                #{assistanceStatus,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                #{updateUid,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.TechnicalAssistance">
+        update technical_assistance
+        <set>
+            <if test="technicalAssistanceUuid != null">
+                technical_assistance_uuid = #{technicalAssistanceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="assistanceUuid != null">
+                assistance_uuid = #{assistanceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userUuid != null">
+                user_uuid = #{userUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType,jdbcType=VARCHAR},
+            </if>
+            <if test="issue != null">
+                issue = #{issue,jdbcType=VARCHAR},
+            </if>
+            <if test="userAssistanceId != null">
+                user_assistance_id = #{userAssistanceId,jdbcType=VARCHAR},
+            </if>
+            <if test="userAssistancePwd != null">
+                user_assistance_pwd = #{userAssistancePwd,jdbcType=VARCHAR},
+            </if>
+            <if test="assistanceStatus != null">
+                assistance_status = #{assistanceStatus,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="TechnicalAssistanceResultMap">
+        select 
+        <include refid="TechnicalAssistance_Column_List" />
+        from technical_assistance
+        where technical_assistance_uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.TechnicalAssistance">
+        update technical_assistance
+        <set>
+            <if test="technicalAssistanceUuid != null">
+                technical_assistance_uuid = #{technicalAssistanceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="assistanceUuid != null">
+                assistance_uuid = #{assistanceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userUuid != null">
+                user_uuid = #{userUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType,jdbcType=VARCHAR},
+            </if>
+            <if test="issue != null">
+                issue = #{issue,jdbcType=VARCHAR},
+            </if>
+            <if test="userAssistanceId != null">
+                user_assistance_id = #{userAssistanceId,jdbcType=VARCHAR},
+            </if>
+            <if test="userAssistancePwd != null">
+                user_assistance_pwd = #{userAssistancePwd,jdbcType=VARCHAR},
+            </if>
+            <if test="assistanceStatus != null">
+                assistance_status = #{assistanceStatus,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where technical_assistance_uuid = #{technicalAssistanceUuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

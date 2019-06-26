@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="client-file"/>
+    <!--dubbo默认单次传输数据最大支持8兆,可能是数据量超过8M的payload限制了，请设置：(100M=100 * 1024 *1024 =16777216Bytes)-->
+    <!--对数据包容量的限制只能由Provider控制，consumer不能控制。-->
+    <!--<dubbo:protocol payload="209715200" threadpool="cached" threads="3200" dispatcher="message"/>-->
+    <dubbo:registry address="${dubbo.registry.address}"/>
+
+    <dubbo:reference id="coursewareService" interface="cn.onlyhi.client.service.CoursewareService" check="false"/>
+    <dubbo:reference id="coursewareImageService" interface="cn.onlyhi.client.service.CoursewareImageService" check="false"/>
+    <dubbo:reference id="tcTeacherService" interface="cn.onlyhi.client.service.TcTeacherService" check="false"/>
+    <dubbo:reference id="redisService" interface="cn.onlyhi.client.service.RedisService" check="false"/>
+    <dubbo:reference id="systemLogService" interface="cn.onlyhi.client.service.SystemLogService" check="false"/>
+    <dubbo:reference id="cpCourseService" interface="cn.onlyhi.client.service.CpCourseService" check="false"/>
+    <dubbo:reference id="classRoomService" interface="cn.onlyhi.client.service.ClassRoomService" check="false"/>
+    <dubbo:reference id="classRecordService" interface="cn.onlyhi.client.service.ClassRecordService" check="false"/>
+    <dubbo:reference id="classMateService" interface="cn.onlyhi.client.service.ClassMateService" check="false"/>
+    <dubbo:reference id="messageService" interface="cn.onlyhi.client.service.MessageService" check="false"/>
+    <dubbo:reference id="classRecordDataService" interface="cn.onlyhi.client.service.ClassRecordDataService" check="false"/>
+    <dubbo:reference id="leadsService" interface="cn.onlyhi.client.service.LeadsService" check="false"/>
+    <dubbo:reference id="clientLogfileService" interface="cn.onlyhi.client.service.ClientLogfileService" check="false"/>
+    <dubbo:reference id="sysEnumService" interface="cn.onlyhi.client.service.SysEnumService" check="false"/>
+    <dubbo:reference id="statisticsClassService" interface="cn.onlyhi.client.service.StatisticsClassService" check="false"/>
+</beans>

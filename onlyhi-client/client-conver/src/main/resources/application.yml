@@ -1,0 +1,84 @@
+#应用程序端口配置
+server: 
+  port: 20031
+#  tomcat:
+#    access-log-enabled: true
+
+#日志配置    
+logging: 
+#    file: 
+#    path: 
+    config: classpath:logback.xml
+#    level: 
+#        org.springframework.web: ERROR
+#        org.springframework.beans: ERROR
+
+
+spring:
+  profiles:
+    active: ${spring.profiles.active}
+  http:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 60MB
+
+
+---
+# 开发环境配置
+spring:
+  profiles: dev
+
+dubbo:
+  registry:
+    address: zookeeper://172.16.21.251:2181
+
+#自定义配置
+my:
+  uploadAddress:  http://localhost/
+  serverIp:  172.16.21.251
+  websocketUrl: http://localhost:20035/websocket/sendMessage
+
+#阿里云OSS存储
+oss:
+  domain: image.onlyeduhi.cn
+  bucketName: onlyhitest
+
+---
+# 测试环境配置
+spring:
+  profiles: test
+
+dubbo:
+  registry:
+    address: zookeeper://106.14.76.62:2181
+
+#自定义配置
+my:
+  uploadAddress:  http://clienttest.haiketang.net/
+  serverIp:  106.14.76.62
+  websocketUrl: http://clienttest.haiketang.net/websocket/sendMessage
+
+#阿里云OSS存储
+oss:
+  domain: image.onlyeduhi.cn
+  bucketName: onlyhitest
+
+---
+# 正式环境配置
+spring:
+  profiles: prd
+
+dubbo:
+  registry:
+    address: zookeeper://172.19.204.172:2181
+
+#自定义配置
+my:
+  uploadAddress:  http://static.onlyhi.cn/ #http://client.onlyhi.cn/
+  serverIp:  101.132.116.184
+  websocketUrl: http://client.onlyhi.cn/websocket/sendMessage
+
+#阿里云OSS存储
+oss:
+  domain: image.onlyhi.cn
+  bucketName: onlyhi

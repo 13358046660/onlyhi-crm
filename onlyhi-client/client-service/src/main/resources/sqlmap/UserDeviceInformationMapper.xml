@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.UserDeviceInformationMapper">
+    <resultMap id="UserDeviceInformationResultMap" type="cn.onlyhi.client.po.UserDeviceInformation">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="computer_model" jdbcType="VARCHAR" property="computerModel" />
+        <result column="operation_system" jdbcType="VARCHAR" property="operationSystem" />
+        <result column="processor" jdbcType="VARCHAR" property="processor" />
+        <result column="motherboard" jdbcType="VARCHAR" property="motherboard" />
+        <result column="ram" jdbcType="VARCHAR" property="ram" />
+        <result column="hard_disk" jdbcType="VARCHAR" property="hardDisk" />
+        <result column="graphics_card" jdbcType="VARCHAR" property="graphicsCard" />
+        <result column="monitor" jdbcType="VARCHAR" property="monitor" />
+        <result column="optical_drive" jdbcType="VARCHAR" property="opticalDrive" />
+        <result column="sound_card" jdbcType="VARCHAR" property="soundCard" />
+        <result column="network_card" jdbcType="VARCHAR" property="networkCard" />
+        <result column="battery" jdbcType="VARCHAR" property="battery" />
+        <result column="system_version" jdbcType="VARCHAR" property="systemVersion" />
+        <result column="computer_name" jdbcType="VARCHAR" property="computerName" />
+        <result column="system_installation_date" jdbcType="VARCHAR" property="systemInstallationDate" />
+        <result column="system_startup_time" jdbcType="VARCHAR" property="systemStartupTime" />
+        <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+        <result column="system_language" jdbcType="VARCHAR" property="systemLanguage" />
+        <result column="system_structure" jdbcType="VARCHAR" property="systemStructure" />
+        <result column="ip_address" jdbcType="VARCHAR" property="ipAddress" />
+        <result column="mac_address" jdbcType="VARCHAR" property="macAddress" />
+        <result column="microphone_equipment" jdbcType="VARCHAR" property="microphoneEquipment" />
+        <result column="speaker_equipment" jdbcType="VARCHAR" property="speakerEquipment" />
+        <result column="camera_equipment" jdbcType="VARCHAR" property="cameraEquipment" />
+        <result column="tablet_device" jdbcType="VARCHAR" property="tabletDevice" />
+        <result column="last_test_time" jdbcType="VARCHAR" property="lastTestTime" />
+        <result column="device_type" jdbcType="VARCHAR" property="deviceType" />
+        <result column="user_type" jdbcType="TINYINT" property="userType" />
+        <result column="login_account" jdbcType="VARCHAR" property="loginAccount" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="status" jdbcType="TINYINT" property="status" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+        <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
+    </resultMap>
+    <sql id="UserDeviceInformation_Column_List">
+        id, computer_model, operation_system, processor, motherboard, ram, hard_disk, graphics_card, 
+        monitor, optical_drive, sound_card, network_card, battery, system_version, computer_name, 
+        system_installation_date, system_startup_time, manufacturer, system_language, system_structure, 
+        ip_address, mac_address, microphone_equipment, speaker_equipment, camera_equipment, 
+        tablet_device, last_test_time, device_type, user_type, login_account, remark, status, 
+        create_date, update_date, create_user_id, update_user_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="UserDeviceInformationResultMap">
+        select 
+        <include refid="UserDeviceInformation_Column_List" />
+        from user_device_information
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from user_device_information
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.UserDeviceInformation">
+        insert into user_device_information
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="computerModel != null">
+                computer_model,
+            </if>
+            <if test="operationSystem != null">
+                operation_system,
+            </if>
+            <if test="processor != null">
+                processor,
+            </if>
+            <if test="motherboard != null">
+                motherboard,
+            </if>
+            <if test="ram != null">
+                ram,
+            </if>
+            <if test="hardDisk != null">
+                hard_disk,
+            </if>
+            <if test="graphicsCard != null">
+                graphics_card,
+            </if>
+            <if test="monitor != null">
+                monitor,
+            </if>
+            <if test="opticalDrive != null">
+                optical_drive,
+            </if>
+            <if test="soundCard != null">
+                sound_card,
+            </if>
+            <if test="networkCard != null">
+                network_card,
+            </if>
+            <if test="battery != null">
+                battery,
+            </if>
+            <if test="systemVersion != null">
+                system_version,
+            </if>
+            <if test="computerName != null">
+                computer_name,
+            </if>
+            <if test="systemInstallationDate != null">
+                system_installation_date,
+            </if>
+            <if test="systemStartupTime != null">
+                system_startup_time,
+            </if>
+            <if test="manufacturer != null">
+                manufacturer,
+            </if>
+            <if test="systemLanguage != null">
+                system_language,
+            </if>
+            <if test="systemStructure != null">
+                system_structure,
+            </if>
+            <if test="ipAddress != null">
+                ip_address,
+            </if>
+            <if test="macAddress != null">
+                mac_address,
+            </if>
+            <if test="microphoneEquipment != null">
+                microphone_equipment,
+            </if>
+            <if test="speakerEquipment != null">
+                speaker_equipment,
+            </if>
+            <if test="cameraEquipment != null">
+                camera_equipment,
+            </if>
+            <if test="tabletDevice != null">
+                tablet_device,
+            </if>
+            <if test="lastTestTime != null">
+                last_test_time,
+            </if>
+            <if test="deviceType != null">
+                device_type,
+            </if>
+            <if test="userType != null">
+                user_type,
+            </if>
+            <if test="loginAccount != null">
+                login_account,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="createUserId != null">
+                create_user_id,
+            </if>
+            <if test="updateUserId != null">
+                update_user_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="computerModel != null">
+                #{computerModel,jdbcType=VARCHAR},
+            </if>
+            <if test="operationSystem != null">
+                #{operationSystem,jdbcType=VARCHAR},
+            </if>
+            <if test="processor != null">
+                #{processor,jdbcType=VARCHAR},
+            </if>
+            <if test="motherboard != null">
+                #{motherboard,jdbcType=VARCHAR},
+            </if>
+            <if test="ram != null">
+                #{ram,jdbcType=VARCHAR},
+            </if>
+            <if test="hardDisk != null">
+                #{hardDisk,jdbcType=VARCHAR},
+            </if>
+            <if test="graphicsCard != null">
+                #{graphicsCard,jdbcType=VARCHAR},
+            </if>
+            <if test="monitor != null">
+                #{monitor,jdbcType=VARCHAR},
+            </if>
+            <if test="opticalDrive != null">
+                #{opticalDrive,jdbcType=VARCHAR},
+            </if>
+            <if test="soundCard != null">
+                #{soundCard,jdbcType=VARCHAR},
+            </if>
+            <if test="networkCard != null">
+                #{networkCard,jdbcType=VARCHAR},
+            </if>
+            <if test="battery != null">
+                #{battery,jdbcType=VARCHAR},
+            </if>
+            <if test="systemVersion != null">
+                #{systemVersion,jdbcType=VARCHAR},
+            </if>
+            <if test="computerName != null">
+                #{computerName,jdbcType=VARCHAR},
+            </if>
+            <if test="systemInstallationDate != null">
+                #{systemInstallationDate,jdbcType=VARCHAR},
+            </if>
+            <if test="systemStartupTime != null">
+                #{systemStartupTime,jdbcType=VARCHAR},
+            </if>
+            <if test="manufacturer != null">
+                #{manufacturer,jdbcType=VARCHAR},
+            </if>
+            <if test="systemLanguage != null">
+                #{systemLanguage,jdbcType=VARCHAR},
+            </if>
+            <if test="systemStructure != null">
+                #{systemStructure,jdbcType=VARCHAR},
+            </if>
+            <if test="ipAddress != null">
+                #{ipAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="macAddress != null">
+                #{macAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="microphoneEquipment != null">
+                #{microphoneEquipment,jdbcType=VARCHAR},
+            </if>
+            <if test="speakerEquipment != null">
+                #{speakerEquipment,jdbcType=VARCHAR},
+            </if>
+            <if test="cameraEquipment != null">
+                #{cameraEquipment,jdbcType=VARCHAR},
+            </if>
+            <if test="tabletDevice != null">
+                #{tabletDevice,jdbcType=VARCHAR},
+            </if>
+            <if test="lastTestTime != null">
+                #{lastTestTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                #{userType,jdbcType=TINYINT},
+            </if>
+            <if test="loginAccount != null">
+                #{loginAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId != null">
+                #{createUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUserId != null">
+                #{updateUserId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.UserDeviceInformation">
+        update user_device_information
+        <set>
+            <if test="computerModel != null">
+                computer_model = #{computerModel,jdbcType=VARCHAR},
+            </if>
+            <if test="operationSystem != null">
+                operation_system = #{operationSystem,jdbcType=VARCHAR},
+            </if>
+            <if test="processor != null">
+                processor = #{processor,jdbcType=VARCHAR},
+            </if>
+            <if test="motherboard != null">
+                motherboard = #{motherboard,jdbcType=VARCHAR},
+            </if>
+            <if test="ram != null">
+                ram = #{ram,jdbcType=VARCHAR},
+            </if>
+            <if test="hardDisk != null">
+                hard_disk = #{hardDisk,jdbcType=VARCHAR},
+            </if>
+            <if test="graphicsCard != null">
+                graphics_card = #{graphicsCard,jdbcType=VARCHAR},
+            </if>
+            <if test="monitor != null">
+                monitor = #{monitor,jdbcType=VARCHAR},
+            </if>
+            <if test="opticalDrive != null">
+                optical_drive = #{opticalDrive,jdbcType=VARCHAR},
+            </if>
+            <if test="soundCard != null">
+                sound_card = #{soundCard,jdbcType=VARCHAR},
+            </if>
+            <if test="networkCard != null">
+                network_card = #{networkCard,jdbcType=VARCHAR},
+            </if>
+            <if test="battery != null">
+                battery = #{battery,jdbcType=VARCHAR},
+            </if>
+            <if test="systemVersion != null">
+                system_version = #{systemVersion,jdbcType=VARCHAR},
+            </if>
+            <if test="computerName != null">
+                computer_name = #{computerName,jdbcType=VARCHAR},
+            </if>
+            <if test="systemInstallationDate != null">
+                system_installation_date = #{systemInstallationDate,jdbcType=VARCHAR},
+            </if>
+            <if test="systemStartupTime != null">
+                system_startup_time = #{systemStartupTime,jdbcType=VARCHAR},
+            </if>
+            <if test="manufacturer != null">
+                manufacturer = #{manufacturer,jdbcType=VARCHAR},
+            </if>
+            <if test="systemLanguage != null">
+                system_language = #{systemLanguage,jdbcType=VARCHAR},
+            </if>
+            <if test="systemStructure != null">
+                system_structure = #{systemStructure,jdbcType=VARCHAR},
+            </if>
+            <if test="ipAddress != null">
+                ip_address = #{ipAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="macAddress != null">
+                mac_address = #{macAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="microphoneEquipment != null">
+                microphone_equipment = #{microphoneEquipment,jdbcType=VARCHAR},
+            </if>
+            <if test="speakerEquipment != null">
+                speaker_equipment = #{speakerEquipment,jdbcType=VARCHAR},
+            </if>
+            <if test="cameraEquipment != null">
+                camera_equipment = #{cameraEquipment,jdbcType=VARCHAR},
+            </if>
+            <if test="tabletDevice != null">
+                tablet_device = #{tabletDevice,jdbcType=VARCHAR},
+            </if>
+            <if test="lastTestTime != null">
+                last_test_time = #{lastTestTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                device_type = #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType,jdbcType=TINYINT},
+            </if>
+            <if test="loginAccount != null">
+                login_account = #{loginAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId != null">
+                create_user_id = #{createUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

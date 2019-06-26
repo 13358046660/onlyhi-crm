@@ -1,0 +1,90 @@
+#应用程序端口配置
+server: 
+  port: 20027
+  tomcat:
+    uri-encoding: UTF-8
+#  tomcat:
+#    access-log-enabled: true
+
+#日志配置    
+logging: 
+#    file: 
+#    path: 
+    config: classpath:logback.xml
+    level:
+#        org.springframework.web: ERROR
+#        org.springframework.beans: ERROR
+         cn.onlyhi.client.dao: DEBUG # 改成你的mapper文件所在包路径
+
+#声网 可能每个环境都需要，放在了最上面（下面的符号--- 是用来区分不同环境的配置分割线） 原appId=79ab6c141bd84eb08621b98063fe23af  appCertificate: a8e0dbb830d44c9f8e7e5a4e32c62c53
+agora:
+  appId:  79ab6c141bd84eb08621b98063fe23af
+  appCertificate: a8e0dbb830d44c9f8e7e5a4e32c62c53
+
+spring:
+  profiles:
+    active: ${spring.profiles.active}
+  http:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+    #encoding:
+     # force: true
+     # charset: UTF-8
+      #enabled: true
+---
+# 开发环境配置
+spring:
+  profiles: dev
+
+dubbo:
+  registry:
+    address: zookeeper://172.16.11.251:2181
+
+#自定义配置
+my:
+  uploadAddress:  http://localhost/
+  serverIp:  172.16.11.251
+  websocketUrl: http://localhost:20035/websocket/sendMessage
+
+---
+# 测试环境配置
+spring:
+  profiles: test
+
+dubbo:
+  registry:
+    address: zookeeper://172.19.23.94:2181
+
+#PHP API地址
+phpStaging:
+   #url: http://apihai.haiketang.net/php/
+    url: http://apiclienttest.haiketang.net/php/
+
+
+
+#自定义配置
+my:
+  uploadAddress:  http://clienttest.haiketang.net/
+  serverIp:  172.19.23.94
+  websocketUrl: http://clienttest.haiketang.net/websocket/sendMessage
+
+
+---
+# 正式环境配置
+spring:
+  profiles: prd
+
+dubbo:
+  registry:
+    address: zookeeper://172.19.204.172:2181
+
+#自定义配置
+my:
+  uploadAddress:  http://static.onlyhi.cn/ #http://client.onlyhi.cn/
+  serverIp:  101.132.116.184
+  websocketUrl: http://client.onlyhi.cn/websocket/sendMessage
+
+#PHP API地址
+phpStaging:
+  url: http://172.19.204.201/php/

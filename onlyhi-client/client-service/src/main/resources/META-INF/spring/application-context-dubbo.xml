@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	    http://code.alibabatech.com/schema/dubbo
+	    http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="client-service"/>
+    <!--dubbo默认单次传输数据最大支持8兆,可能是数据量超过8M的payload限制了，请设置：(100M=100 * 1024 *1024 =16777216Bytes)-->
+    <dubbo:protocol port="${dubbo.protocol.port}" host="${dubbo.host}" payload="209715200" threadpool="cached" threads="3200" dispatcher="message" />
+    <dubbo:registry address="${dubbo.registry.address}"/>
+
+    <dubbo:service interface="cn.onlyhi.client.service.AppColumnService" ref="appColumnServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.AppInfoService" ref="appInfoServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.ArticleService" ref="articleServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.BannerService" ref="bannerServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.ChannelService" ref="channelServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.ClassRecordService" ref="classRecordServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.ClassRoomService" ref="classRoomServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.CoursePriceBaiduCodeService" ref="coursePriceBaiduCodeServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.CoursewareImageService" ref="coursewareImageServiceImpl" timeout="10000"/>
+    <dubbo:service interface="cn.onlyhi.client.service.CoursewareService" ref="coursewareServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.CpCoursePriceService" ref="cpCoursePriceServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.CpCourseService" ref="cpCourseServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.CpCourseVersionService" ref="cpCourseVersionServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.CpPayRequestService" ref="cpPayRequestServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.LeadsExtService" ref="leadsExtServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.LeadsLogService" ref="leadsLogServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.LeadsService" ref="leadsServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.MessageService" ref="messageServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.MessageSendRecordService" ref="messageSendRecordServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.MessageSendTemplateService" ref="messageSendTemplateServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.PatriarchLeadsRecordService" ref="patriarchLeadsRecordServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.PatriarchLeadsService" ref="patriarchLeadsServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.PatriarchService" ref="patriarchServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.PromotionCodeService" ref="promotionCodeServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.PushMessageService" ref="pushMessageServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.RedisService" ref="redisServiceImpl"/>
+    <dubbo:service interface="cn.onlyhi.client.service.StudentService" ref="studentServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.SystemLogService" ref="systemLogServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.TcTeacherService" ref="tcTeacherServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.TeacherRecommendService" ref="teacherRecommendServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.UserFeedbackService" ref="userFeedbackServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.UserQqService" ref="userQqServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.UserSinamicroblogService" ref="userSinamicroblogServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.UserWechatService" ref="userWechatServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.ClassAppraiseService" ref="classAppraiseServiceImpl"/>
+    <dubbo:service interface="cn.onlyhi.client.service.ClassAppraiseStarService" ref="classAppraiseStarServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.CourseLeadsService" ref="courseLeadsServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.UserService" ref="userServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.RoleService" ref="roleServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.ClassMateService" ref="classMateServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.UserEasemobService" ref="userEasemobServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.ClassRecordDataService" ref="classRecordDataServiceImpl" timeout="10000"/>
+    <dubbo:service interface="cn.onlyhi.client.service.TechnicalAssistanceService" ref="technicalAssistanceServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.UserNeteaseimService" ref="userNeteaseimServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.TcPayGradeService" ref="tcPayGradeServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.TeacherFreetimetemplateService" ref="teacherFreetimetemplateServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.TcTeacherDateService" ref="tcTeacherDateServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.ClientLogfileService" ref="clientLogfileServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.ClassTeacherAppraiseService" ref="classTeacherAppraiseServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.SysAreaService" ref="sysAreaServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.TcTeacherFileService" ref="tcTeacherFileServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.TcTeacherSchoolService" ref="tcTeacherSchoolServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.SysEnumService" ref="sysEnumServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.UserDeviceInformationService" ref="userDeviceInformationServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.AgoraCallLogService" ref="agoraCallLogServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.TcTabletService" ref="tcTabletServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.CoursewareDirService" ref="coursewareDirServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.LeadsSignService" ref="leadsSignServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.LeadsSignRecordService" ref="leadsSignRecordServiceImpl" />
+	<dubbo:service interface="cn.onlyhi.client.service.TeacherFreetimeRecordService" ref="teacherFreetimeRecordServiceImpl" />
+    <dubbo:service interface="cn.onlyhi.client.service.StatisticsClassService" ref="statisticsClassServiceImpl" />
+    <!--服务端的超时配置是消费端的缺省配置，即如果服务端设置了超时，任务消费端可以不设置超时时间，简化了配置。-->
+    <!--服务端 全局控制请求超时180分钟，默认是500ms 范围接口控制、方法控制；配置的查找顺序：方法级优先，接口级次之，全局配置再次之，如果级别一样，则消费方优先，提供方次之。-->
+    <dubbo:provider timeout="10800000"></dubbo:provider>
+</beans>

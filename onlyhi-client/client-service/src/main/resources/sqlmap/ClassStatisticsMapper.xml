@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.ClassStatisticsMapper">
+    <resultMap id="ClassStatisticsResultMap" type="cn.onlyhi.client.po.ClassStatistics">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="class_uuid" jdbcType="VARCHAR" property="classUuid" />
+        <result column="student_name" jdbcType="VARCHAR" property="studentName" />
+        <result column="grade" jdbcType="VARCHAR" property="grade" />
+        <result column="teacher_name" jdbcType="VARCHAR" property="teacherName" />
+        <result column="course_date" jdbcType="VARCHAR" property="courseDate" />
+        <result column="start_time" jdbcType="VARCHAR" property="startTime" />
+        <result column="end_time" jdbcType="VARCHAR" property="endTime" />
+        <result column="teacher_first_time" jdbcType="DATE" property="teacherFirstTime" />
+        <result column="teacher_last_time" jdbcType="DATE" property="teacherLastTime" />
+        <result column="student_first_time" jdbcType="DATE" property="studentFirstTime" />
+        <result column="student_last_time" jdbcType="DATE" property="studentLastTime" />
+        <result column="common_length" jdbcType="INTEGER" property="commonLength" />
+        <result column="teacher_length" jdbcType="INTEGER" property="teacherLength" />
+        <result column="student_length" jdbcType="INTEGER" property="studentLength" />
+        <result column="room_uuid" jdbcType="VARCHAR" property="roomUuid" />
+        <result column="check_length" jdbcType="INTEGER" property="checkLength" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="checker" jdbcType="VARCHAR" property="checker" />
+        <result column="check_time" jdbcType="TIMESTAMP" property="checkTime" />
+    </resultMap>
+    <sql id="ClassStatistics_Column_List">
+        id, class_uuid, student_name, grade, teacher_name, course_date, start_time, end_time, 
+        teacher_first_time, teacher_last_time, student_first_time, student_last_time, common_length, 
+        teacher_length, student_length, room_uuid, check_length, remark, checker, check_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ClassStatisticsResultMap">
+        select 
+        <include refid="ClassStatistics_Column_List" />
+        from class_statistics
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from class_statistics
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.ClassStatistics">
+        insert into class_statistics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="classUuid != null">
+                class_uuid,
+            </if>
+            <if test="studentName != null">
+                student_name,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="teacherName != null">
+                teacher_name,
+            </if>
+            <if test="courseDate != null">
+                course_date,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="teacherFirstTime != null">
+                teacher_first_time,
+            </if>
+            <if test="teacherLastTime != null">
+                teacher_last_time,
+            </if>
+            <if test="studentFirstTime != null">
+                student_first_time,
+            </if>
+            <if test="studentLastTime != null">
+                student_last_time,
+            </if>
+            <if test="commonLength != null">
+                common_length,
+            </if>
+            <if test="teacherLength != null">
+                teacher_length,
+            </if>
+            <if test="studentLength != null">
+                student_length,
+            </if>
+            <if test="roomUuid != null">
+                room_uuid,
+            </if>
+            <if test="checkLength != null">
+                check_length,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="checker != null">
+                checker,
+            </if>
+            <if test="checkTime != null">
+                check_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="classUuid != null">
+                #{classUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="studentName != null">
+                #{studentName,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherName != null">
+                #{teacherName,jdbcType=VARCHAR},
+            </if>
+            <if test="courseDate != null">
+                #{courseDate,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=VARCHAR},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherFirstTime != null">
+                #{teacherFirstTime,jdbcType=DATE},
+            </if>
+            <if test="teacherLastTime != null">
+                #{teacherLastTime,jdbcType=DATE},
+            </if>
+            <if test="studentFirstTime != null">
+                #{studentFirstTime,jdbcType=DATE},
+            </if>
+            <if test="studentLastTime != null">
+                #{studentLastTime,jdbcType=DATE},
+            </if>
+            <if test="commonLength != null">
+                #{commonLength,jdbcType=INTEGER},
+            </if>
+            <if test="teacherLength != null">
+                #{teacherLength,jdbcType=INTEGER},
+            </if>
+            <if test="studentLength != null">
+                #{studentLength,jdbcType=INTEGER},
+            </if>
+            <if test="roomUuid != null">
+                #{roomUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="checkLength != null">
+                #{checkLength,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="checker != null">
+                #{checker,jdbcType=VARCHAR},
+            </if>
+            <if test="checkTime != null">
+                #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.ClassStatistics">
+        update class_statistics
+        <set>
+            <if test="classUuid != null">
+                class_uuid = #{classUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="studentName != null">
+                student_name = #{studentName,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherName != null">
+                teacher_name = #{teacherName,jdbcType=VARCHAR},
+            </if>
+            <if test="courseDate != null">
+                course_date = #{courseDate,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=VARCHAR},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherFirstTime != null">
+                teacher_first_time = #{teacherFirstTime,jdbcType=DATE},
+            </if>
+            <if test="teacherLastTime != null">
+                teacher_last_time = #{teacherLastTime,jdbcType=DATE},
+            </if>
+            <if test="studentFirstTime != null">
+                student_first_time = #{studentFirstTime,jdbcType=DATE},
+            </if>
+            <if test="studentLastTime != null">
+                student_last_time = #{studentLastTime,jdbcType=DATE},
+            </if>
+            <if test="commonLength != null">
+                common_length = #{commonLength,jdbcType=INTEGER},
+            </if>
+            <if test="teacherLength != null">
+                teacher_length = #{teacherLength,jdbcType=INTEGER},
+            </if>
+            <if test="studentLength != null">
+                student_length = #{studentLength,jdbcType=INTEGER},
+            </if>
+            <if test="roomUuid != null">
+                room_uuid = #{roomUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="checkLength != null">
+                check_length = #{checkLength,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="checker != null">
+                checker = #{checker,jdbcType=VARCHAR},
+            </if>
+            <if test="checkTime != null">
+                check_time = #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.CpCourseVersionMapper">
+    <resultMap id="CpCourseVersionResultMap" type="cn.onlyhi.client.po.CpCourseVersion">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="grade" jdbcType="VARCHAR" property="grade" />
+        <result column="version" jdbcType="VARCHAR" property="version" />
+        <result column="status" jdbcType="BIT" property="status" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    </resultMap>
+    <sql id="CpCourseVersion_Column_List">
+        id, uuid, grade, version, status, create_date, update_date
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="CpCourseVersionResultMap">
+        select 
+        <include refid="CpCourseVersion_Column_List" />
+        from cp_course_version
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from cp_course_version
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.CpCourseVersion">
+        insert into cp_course_version
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.CpCourseVersion">
+        update cp_course_version
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="CpCourseVersionResultMap">
+        select 
+        <include refid="CpCourseVersion_Column_List" />
+        from cp_course_version
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.CpCourseVersion">
+        update cp_course_version
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="client-conver"/>
+    <dubbo:registry address="${dubbo.registry.address}"/>
+
+    <dubbo:reference id="redisService" interface="cn.onlyhi.client.service.RedisService" check="false"/>
+    <dubbo:reference id="systemLogService" interface="cn.onlyhi.client.service.SystemLogService" check="false"/>
+
+</beans>

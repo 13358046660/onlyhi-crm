@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.RoleMapper">
+    <resultMap id="RoleResultMap" type="cn.onlyhi.client.po.Role">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="uuid" jdbcType="VARCHAR" property="uuid"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="alias" jdbcType="VARCHAR" property="alias"/>
+        <result column="seq" jdbcType="INTEGER" property="seq"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="status" jdbcType="BIT" property="status"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Role_Column_List">
+        id, uuid, name, alias, seq, description, status, create_date, update_date
+    </sql>
+    <!-- 查询用户角色列表 -->
+    <select id="findByUserUuid" parameterType="java.lang.String" resultType="java.lang.String">
+        select r.alias
+        from role r
+        left join user_role ur on ur.role_uuid=r.uuid
+        where r.status=1 and ur.status=1
+        and ur.user_uuid=#{userUuid}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="RoleResultMap">
+        select
+        <include refid="Role_Column_List"/>
+        from role
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from role
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.Role">
+        insert into role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="alias != null">
+                alias,
+            </if>
+            <if test="seq != null">
+                seq,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="alias != null">
+                #{alias,jdbcType=VARCHAR},
+            </if>
+            <if test="seq != null">
+                #{seq,jdbcType=INTEGER},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.Role">
+        update role
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="alias != null">
+                alias = #{alias,jdbcType=VARCHAR},
+            </if>
+            <if test="seq != null">
+                seq = #{seq,jdbcType=INTEGER},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="RoleResultMap">
+        select
+        <include refid="Role_Column_List"/>
+        from role
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.Role">
+        update role
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="alias != null">
+                alias = #{alias,jdbcType=VARCHAR},
+            </if>
+            <if test="seq != null">
+                seq = #{seq,jdbcType=INTEGER},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

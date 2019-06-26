@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.UserMapper">
+    <resultMap id="UserResultMap" type="cn.onlyhi.client.po.User">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="uuid" jdbcType="VARCHAR" property="uuid"/>
+        <result column="login_name" jdbcType="VARCHAR" property="loginName"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="sex" jdbcType="BIT" property="sex"/>
+        <result column="age" jdbcType="INTEGER" property="age"/>
+        <result column="organization_uuid" jdbcType="VARCHAR" property="organizationUuid"/>
+        <result column="team_uuid" jdbcType="VARCHAR" property="teamUuid"/>
+        <result column="posts_uuid" jdbcType="VARCHAR" property="postsUuid"/>
+        <result column="user_type" jdbcType="BIT" property="userType"/>
+        <result column="status" jdbcType="BIT" property="status"/>
+        <result column="password_expiration" jdbcType="TIMESTAMP" property="passwordExpiration"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="role_uuid" jdbcType="VARCHAR" property="roleUuid"/>
+        <result column="seats_no" jdbcType="VARCHAR" property="seatsNo"/>
+        <result column="seats_password" jdbcType="VARCHAR" property="seatsPassword"/>
+        <result column="hotline_phone" jdbcType="VARCHAR" property="hotlinePhone"/>
+        <result column="seats_call_status" jdbcType="INTEGER" property="seatsCallStatus"/>
+        <result column="seats_status" jdbcType="INTEGER" property="seatsStatus"/>
+        <result column="day_call_num" jdbcType="INTEGER" property="dayCallNum"/>
+    </resultMap>
+    <sql id="User_Column_List">
+        id, uuid, login_name, name, password, email, phone, sex, age, organization_uuid, 
+        team_uuid, posts_uuid, user_type, status, password_expiration, create_date, update_date, 
+        role_uuid, seats_no, seats_password, hotline_phone, seats_call_status, seats_status, 
+        day_call_num
+    </sql>
+    <select id="findByRoleAlias" parameterType="java.lang.String" resultMap="UserResultMap">
+        select u.*
+        from user u
+        LEFT JOIN user_role ur on ur.user_uuid=u.uuid and ur.`status`=1
+        LEFT JOIN role r on r.uuid=ur.role_uuid and r.`status`=1
+        where u.`status`=1 and r.alias=#{alias};
+    </select>
+    <select id="findUserByUuid" parameterType="java.lang.String" resultType="cn.onlyhi.client.dto.UserDto">
+        select
+        DISTINCT u.name userName
+        from user u
+        LEFT JOIN user_role ur on ur.user_uuid=u.uuid and ur.`status`=1
+        LEFT JOIN role r on r.uuid=ur.role_uuid and r.`status`=1
+        where u.`status`=1 and u.uuid=#{curUuid};
+    </select>
+    <!-- 拥有教学监课角色的userUuid列表 -->
+    <select id="findQCMonitor" resultType="cn.onlyhi.client.dto.UserDto">
+        select
+          distinct u.uuid as userUuid
+          ,u.name as userName
+        from user u
+		LEFT JOIN user_role ur on ur.user_uuid=u.uuid
+        LEFT JOIN role r on r.uuid=ur.role_uuid
+        where u.`status`=1 and r.`status`=1 and ur.status=1 and r.alias in('qc','qczy');
+    </select>
+    <!-- 查找教学监课用户uuid -->
+    <select id="findAllMonitor" resultType="cn.onlyhi.client.dto.UserDto">
+        select
+          distinct u.uuid as userUuid
+          ,u.name as userName
+        from user u
+		LEFT JOIN user_role ur on ur.user_uuid=u.uuid
+        LEFT JOIN role r on r.uuid=ur.role_uuid
+        where u.`status`=1 and r.`status`=1 and ur.status=1 and r.alias='ts';
+    </select>
+    <select id="findByLoginName" parameterType="java.lang.String" resultMap="UserResultMap">
+        select
+        <include refid="User_Column_List"/>
+        from user
+        where login_name = #{loginName,jdbcType=VARCHAR} and status=1
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="UserResultMap">
+        select
+        <include refid="User_Column_List"/>
+        from user
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from user
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.User">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="loginName != null">
+                login_name,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="age != null">
+                age,
+            </if>
+            <if test="organizationUuid != null">
+                organization_uuid,
+            </if>
+            <if test="teamUuid != null">
+                team_uuid,
+            </if>
+            <if test="postsUuid != null">
+                posts_uuid,
+            </if>
+            <if test="userType != null">
+                user_type,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="passwordExpiration != null">
+                password_expiration,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="roleUuid != null">
+                role_uuid,
+            </if>
+            <if test="seatsNo != null">
+                seats_no,
+            </if>
+            <if test="seatsPassword != null">
+                seats_password,
+            </if>
+            <if test="hotlinePhone != null">
+                hotline_phone,
+            </if>
+            <if test="seatsCallStatus != null">
+                seats_call_status,
+            </if>
+            <if test="seatsStatus != null">
+                seats_status,
+            </if>
+            <if test="dayCallNum != null">
+                day_call_num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="loginName != null">
+                #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=BIT},
+            </if>
+            <if test="age != null">
+                #{age,jdbcType=INTEGER},
+            </if>
+            <if test="organizationUuid != null">
+                #{organizationUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="teamUuid != null">
+                #{teamUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="postsUuid != null">
+                #{postsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                #{userType,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="passwordExpiration != null">
+                #{passwordExpiration,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="roleUuid != null">
+                #{roleUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="seatsNo != null">
+                #{seatsNo,jdbcType=VARCHAR},
+            </if>
+            <if test="seatsPassword != null">
+                #{seatsPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="hotlinePhone != null">
+                #{hotlinePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="seatsCallStatus != null">
+                #{seatsCallStatus,jdbcType=INTEGER},
+            </if>
+            <if test="seatsStatus != null">
+                #{seatsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="dayCallNum != null">
+                #{dayCallNum,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.User">
+        update user
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="loginName != null">
+                login_name = #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=BIT},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="organizationUuid != null">
+                organization_uuid = #{organizationUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="teamUuid != null">
+                team_uuid = #{teamUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="postsUuid != null">
+                posts_uuid = #{postsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="passwordExpiration != null">
+                password_expiration = #{passwordExpiration,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="roleUuid != null">
+                role_uuid = #{roleUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="seatsNo != null">
+                seats_no = #{seatsNo,jdbcType=VARCHAR},
+            </if>
+            <if test="seatsPassword != null">
+                seats_password = #{seatsPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="hotlinePhone != null">
+                hotline_phone = #{hotlinePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="seatsCallStatus != null">
+                seats_call_status = #{seatsCallStatus,jdbcType=INTEGER},
+            </if>
+            <if test="seatsStatus != null">
+                seats_status = #{seatsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="dayCallNum != null">
+                day_call_num = #{dayCallNum,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="UserResultMap">
+        select
+        <include refid="User_Column_List"/>
+        from user
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.User">
+        update user
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="loginName != null">
+                login_name = #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=BIT},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="organizationUuid != null">
+                organization_uuid = #{organizationUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="teamUuid != null">
+                team_uuid = #{teamUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="postsUuid != null">
+                posts_uuid = #{postsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="passwordExpiration != null">
+                password_expiration = #{passwordExpiration,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="roleUuid != null">
+                role_uuid = #{roleUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="seatsNo != null">
+                seats_no = #{seatsNo,jdbcType=VARCHAR},
+            </if>
+            <if test="seatsPassword != null">
+                seats_password = #{seatsPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="hotlinePhone != null">
+                hotline_phone = #{hotlinePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="seatsCallStatus != null">
+                seats_call_status = #{seatsCallStatus,jdbcType=INTEGER},
+            </if>
+            <if test="seatsStatus != null">
+                seats_status = #{seatsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="dayCallNum != null">
+                day_call_num = #{dayCallNum,jdbcType=INTEGER},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

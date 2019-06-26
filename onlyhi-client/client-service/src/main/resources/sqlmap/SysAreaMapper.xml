@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.SysAreaMapper">
+    <resultMap id="SysAreaResultMap" type="cn.onlyhi.client.po.SysArea">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+        <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+        <result column="parent_code" jdbcType="VARCHAR" property="parentCode" />
+        <result column="area_level" jdbcType="INTEGER" property="areaLevel" />
+    </resultMap>
+    <sql id="SysArea_Column_List">
+        id, area_code, area_name, parent_code, area_level
+    </sql>
+    <select id="findByAreaCode" parameterType="java.lang.String" resultMap="SysAreaResultMap">
+        select
+        <include refid="SysArea_Column_List" />
+        from sys_area
+        where area_code=#{areaCode}
+    </select>
+    <select id="findByAreaLevelAndParentCode" resultMap="SysAreaResultMap">
+        select
+        <include refid="SysArea_Column_List" />
+        from sys_area
+        where area_level = #{areaLevel} and parent_code=#{parentCode}
+    </select>
+    <select id="findByAreaLevel" parameterType="java.lang.Integer" resultMap="SysAreaResultMap">
+        select
+        <include refid="SysArea_Column_List" />
+        from sys_area
+        where area_level = #{areaLevel}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="SysAreaResultMap">
+        select 
+        <include refid="SysArea_Column_List" />
+        from sys_area
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from sys_area
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.SysArea">
+        insert into sys_area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="areaCode != null">
+                area_code,
+            </if>
+            <if test="areaName != null">
+                area_name,
+            </if>
+            <if test="parentCode != null">
+                parent_code,
+            </if>
+            <if test="areaLevel != null">
+                area_level,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="areaCode != null">
+                #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="areaName != null">
+                #{areaName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentCode != null">
+                #{parentCode,jdbcType=VARCHAR},
+            </if>
+            <if test="areaLevel != null">
+                #{areaLevel,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.SysArea">
+        update sys_area
+        <set>
+            <if test="areaCode != null">
+                area_code = #{areaCode,jdbcType=VARCHAR},
+            </if>
+            <if test="areaName != null">
+                area_name = #{areaName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentCode != null">
+                parent_code = #{parentCode,jdbcType=VARCHAR},
+            </if>
+            <if test="areaLevel != null">
+                area_level = #{areaLevel,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

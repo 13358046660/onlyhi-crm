@@ -1,0 +1,183 @@
+#应用程序端口配置
+server: 
+  port: 20003
+#  tomcat:
+#    access-log-enabled: true
+
+#日志配置    
+logging: 
+#    file: 
+#    path: 
+    config: classpath:logback.xml
+    level:
+#        org.springframework.web: ERROR
+#        org.springframework.beans: ERROR
+         cn.onlyhi.client.dao: DEBUG # 改成你的mapper文件所在包路径
+
+#友盟推送
+umengpush:
+  iosAppkey: 590199fcf5ade412690008b6
+  iosAppMasterSecret:  qhb3pi4q875q7bqttjjgytwb6je1wze2
+  androidAppkey:  591d1b53677baa102c00175c
+  androidAppMasterSecret: wpyuvn3qjacowqywpk8nfeljrlbhlo1s
+
+#声网 原appId=79ab6c141bd84eb08621b98063fe23af  appCertificate: a8e0dbb830d44c9f8e7e5a4e32c62c53
+agora:
+  appId:  79ab6c141bd84eb08621b98063fe23af
+  appCertificate: a8e0dbb830d44c9f8e7e5a4e32c62c53
+
+spring:
+  application:
+    name: crm-client
+  profiles:
+    active: ${spring.profiles.active}
+  http:
+      multipart:
+        max-file-size: 30MB
+        max-request-size: 60MB
+
+---
+# 开发环境配置
+spring:
+  profiles: dev
+  rabbitmq:
+    host: 172.16.11.252
+    port: 5672
+    username: haiketang
+    password: haiketang
+    publisher-confirms: true
+    virtual-host: /
+dubbo:
+  registry:
+    address: zookeeper://172.16.11.252:2181
+
+#自定义配置
+my:
+  uploadAddress:  http://172.16.11.252/
+  serverIp:  172.16.11.252
+  websocketUrl: http://localhost:20035/websocket/sendMessage
+
+#环信应用配置
+chatConfig:
+  serverHost: a1.easemob.com
+  appKey: 1157170704115696#hiketangdev
+  clientId: YXA69PgbQGK2Eees0pko-RDMOQ
+  clientSecret: YXA6Pg0h24A4OkF1CEVTSRfU2FyROPM
+
+pingppSecretKey:
+  apiKey: sk_test_zf5SCGi5yT4OffTuTSOWbzL0
+
+baiduStaging:
+ url: http://rdtest.umoney.baidu.com/edu/openapi/post
+
+#网易云信
+netease:
+  appKey: 60379caa96dfaeca8365f336b25bb0b7
+  appSecret:  d6636a3708df
+
+#PHP API地址
+phpStaging:
+   url: http://apiclienttest.haiketang.net/php/
+
+#阿里云OSS存储
+oss:
+  domain: image.onlyeduhi.cn
+  bucketName: onlyhitest
+
+---
+# 测试环境配置
+spring:
+  profiles: test
+  rabbitmq:
+    host: 172.19.23.94
+    port: 5672
+    username: onlyhi
+    password: Haiketang_onlyhi
+    publisher-confirms: true
+    virtual-host: /
+dubbo:
+  registry:
+    address: zookeeper://172.19.23.94:2181
+
+#自定义配置
+my:
+  uploadAddress:  http://clienttest.haiketang.net/
+  serverIp:  172.19.23.94
+  websocketUrl: http://clienttest.haiketang.net/websocket/sendMessage
+
+#环信应用配置
+chatConfig:
+  serverHost: a1.easemob.com
+  appKey: 1157170704115696#hiketangtest
+  clientId: YXA6DJ5WEGK3Eeeo68V7Ot7OgA
+  clientSecret: YXA6f5CP1NpdqU7LRWQnsw_JQSSkrCc
+
+pingppSecretKey:
+  apiKey: sk_test_zf5SCGi5yT4OffTuTSOWbzL0
+
+baiduStaging:
+ url: http://rdtest.umoney.baidu.com/edu/openapi/post
+
+#网易云信
+netease:
+  appKey: 60379caa96dfaeca8365f336b25bb0b7
+  appSecret:  d6636a3708df
+
+
+#阿里云OSS存储
+oss:
+  domain: image.onlyeduhi.cn
+  bucketName: onlyhitest
+#PHP API地址
+phpStaging:
+  #uurl: http://apihai.haiketang.net/php/
+   url: http://apiclienttest.haiketang.net/php/
+
+---
+# 正式环境配置
+spring:
+  profiles: prd
+  rabbitmq:
+    host: 172.19.204.173
+    port: 5672
+    username: onlyhi
+    password: Haiketang_onlyhi
+    publisher-confirms: true
+    virtual-host: /
+dubbo:
+  registry:
+    address: zookeeper://172.19.204.172:2181
+
+#自定义配置
+my:
+  uploadAddress:  http://client.onlyhi.cn/
+  serverIp:  101.132.116.184
+  websocketUrl: http://client.onlyhi.cn/websocket/sendMessage
+
+#环信应用配置
+chatConfig:
+  serverHost: a1.easemob.com
+  appKey: 1157170704115696#hiketang
+  clientId: YXA6NJkHwGCUEeeNF-WSwCo_9w
+  clientSecret: YXA6eeKUvQ7_V9fZhdeYGXUOBCX7mbM
+
+pingppSecretKey:
+  apiKey: sk_live_GOW9O8mzz9aTbHiTeHDSu5WH
+
+baiduStaging:
+ url: https://umoney.baidu.com/edu/openapi/post
+
+#网易云信(还是测试的)
+netease:
+  appKey: 60379caa96dfaeca8365f336b25bb0b7
+  appSecret:  d6636a3708df
+
+
+#阿里云OSS存储
+oss:
+  domain: image.onlyhi.cn
+  bucketName: onlyhi
+
+#PHP API地址
+phpStaging:
+  url: http://172.19.204.201/php/

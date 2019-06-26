@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.CoursewareImageMapper">
+    <resultMap id="CoursewareImageResultMap" type="cn.onlyhi.client.po.CoursewareImage">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="courseware_image_uuid" jdbcType="VARCHAR" property="coursewareImageUuid" />
+        <result column="courseware_uuid" jdbcType="VARCHAR" property="coursewareUuid" />
+        <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+        <result column="image_path" jdbcType="VARCHAR" property="imagePath" />
+        <result column="image_name" jdbcType="VARCHAR" property="imageName" />
+        <result column="width" jdbcType="INTEGER" property="width" />
+        <result column="height" jdbcType="INTEGER" property="height" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="image_md5" jdbcType="VARCHAR" property="imageMd5" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="create_uid" jdbcType="VARCHAR" property="createUid" />
+        <result column="update_uid" jdbcType="VARCHAR" property="updateUid" />
+        <result column="image_length" jdbcType="INTEGER" property="imageLength" />
+    </resultMap>
+    <sql id="CoursewareImage_Column_List">
+        id, courseware_image_uuid, courseware_uuid, image_url, image_path, image_name, width,
+        height, status, image_md5, sort, remark, create_time, update_time, create_uid, update_uid,image_length
+    </sql>
+    <select id="findNoMd5" resultMap="CoursewareImageResultMap">
+        select courseware_image_uuid, image_url from courseware_image where image_md5 is null
+    </select>
+    <insert id="batchInsertSelective" parameterType="java.util.List">
+        insert into courseware_image
+        (courseware_image_uuid, courseware_uuid, image_url, image_path, image_name, width,height, image_md5,create_uid,image_length)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.coursewareImageUuid,jdbcType=VARCHAR},
+            #{item.coursewareUuid,jdbcType=VARCHAR},
+            #{item.imageUrl,jdbcType=VARCHAR},
+            #{item.imagePath,jdbcType=VARCHAR},
+            #{item.imageName,jdbcType=VARCHAR},
+            #{item.width,jdbcType=INTEGER},
+            #{item.height,jdbcType=INTEGER},
+            #{item.imageMd5,jdbcType=VARCHAR},
+            #{item.createUid,jdbcType=VARCHAR},
+            #{item.imageLength,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+    <select id="selectByCoursewareId" resultMap="CoursewareImageResultMap">
+        select
+        <include refid="CoursewareImage_Column_List"/>
+        from courseware_image
+        where courseware_uuid = #{coursewareId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByCoursewareId" parameterType="java.lang.String">
+        delete from courseware_image
+        where courseware_uuid = #{coursewareId,jdbcType=VARCHAR}
+    </delete>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="CoursewareImageResultMap">
+        select
+        <include refid="CoursewareImage_Column_List" />
+        from courseware_image
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from courseware_image
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.CoursewareImage">
+        insert into courseware_image
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="coursewareImageUuid != null">
+                courseware_image_uuid,
+            </if>
+            <if test="coursewareUuid != null">
+                courseware_uuid,
+            </if>
+            <if test="imageUrl != null">
+                image_url,
+            </if>
+            <if test="imagePath != null">
+                image_path,
+            </if>
+            <if test="imageName != null">
+                image_name,
+            </if>
+            <if test="width != null">
+                width,
+            </if>
+            <if test="height != null">
+                height,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="imageMd5 != null">
+                image_md5,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createUid != null">
+                create_uid,
+            </if>
+            <if test="updateUid != null">
+                update_uid,
+            </if>
+            <if test="imageLength != null">
+                image_length,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="coursewareImageUuid != null">
+                #{coursewareImageUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareUuid != null">
+                #{coursewareUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="imageUrl != null">
+                #{imageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="imageName != null">
+                #{imageName,jdbcType=VARCHAR},
+            </if>
+            <if test="width != null">
+                #{width,jdbcType=INTEGER},
+            </if>
+            <if test="height != null">
+                #{height,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="imageMd5 != null">
+                #{imageMd5,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                #{updateUid,jdbcType=VARCHAR},
+            </if>
+            <if test="imageLength != null">
+                #{image_length,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.CoursewareImage">
+        update courseware_image
+        <set>
+            <if test="coursewareImageUuid != null">
+                courseware_image_uuid = #{coursewareImageUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareUuid != null">
+                courseware_uuid = #{coursewareUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="imageUrl != null">
+                image_url = #{imageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                image_path = #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="imageName != null">
+                image_name = #{imageName,jdbcType=VARCHAR},
+            </if>
+            <if test="width != null">
+                width = #{width,jdbcType=INTEGER},
+            </if>
+            <if test="height != null">
+                height = #{height,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="imageMd5 != null">
+                image_md5 = #{imageMd5,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="CoursewareImageResultMap">
+        select
+        <include refid="CoursewareImage_Column_List" />
+        from courseware_image
+        where courseware_image_uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.CoursewareImage">
+        update courseware_image
+        <set>
+            <if test="coursewareImageUuid != null">
+                courseware_image_uuid = #{coursewareImageUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareUuid != null">
+                courseware_uuid = #{coursewareUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="imageUrl != null">
+                image_url = #{imageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="imagePath != null">
+                image_path = #{imagePath,jdbcType=VARCHAR},
+            </if>
+            <if test="imageName != null">
+                image_name = #{imageName,jdbcType=VARCHAR},
+            </if>
+            <if test="width != null">
+                width = #{width,jdbcType=INTEGER},
+            </if>
+            <if test="height != null">
+                height = #{height,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="imageMd5 != null">
+                image_md5 = #{imageMd5,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where courseware_image_uuid = #{coursewareImageUuid,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

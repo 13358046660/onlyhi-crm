@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.onlyhi.client.dao.ChannelMapper">
+    <resultMap id="ChannelResultMap" type="cn.onlyhi.client.po.Channel">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="level" jdbcType="VARCHAR" property="level" />
+        <result column="adid" jdbcType="VARCHAR" property="adid" />
+        <result column="channel_keyword" jdbcType="VARCHAR" property="channelKeyword" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="lp_page" jdbcType="VARCHAR" property="lpPage" />
+        <result column="put_link" jdbcType="VARCHAR" property="putLink" />
+        <result column="platform" jdbcType="VARCHAR" property="platform" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="status" jdbcType="BIT" property="status" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    </resultMap>
+    <sql id="Channel_Column_List">
+        id, uuid, name, level, adid, channel_keyword, type, lp_page, put_link, platform,
+        description, status, create_date, update_date
+    </sql>
+    <select id="findChannelByAdid" resultMap="ChannelResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Channel_Column_List"/>
+        from channel
+        where adid = #{adid,jdbcType=VARCHAR} and status=1
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ChannelResultMap">
+        select
+        <include refid="Channel_Column_List" />
+        from channel
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from channel
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.Channel">
+        insert into channel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="level != null">
+                level,
+            </if>
+            <if test="adid != null">
+                adid,
+            </if>
+            <if test="channelKeyword != null">
+                channel_keyword,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="lpPage != null">
+                lp_page,
+            </if>
+            <if test="putLink != null">
+                put_link,
+            </if>
+            <if test="platform != null">
+                platform,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                #{level,jdbcType=VARCHAR},
+            </if>
+            <if test="adid != null">
+                #{adid,jdbcType=VARCHAR},
+            </if>
+            <if test="channelKeyword != null">
+                #{channelKeyword,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="lpPage != null">
+                #{lpPage,jdbcType=VARCHAR},
+            </if>
+            <if test="putLink != null">
+                #{putLink,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.Channel">
+        update channel
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                level = #{level,jdbcType=VARCHAR},
+            </if>
+            <if test="adid != null">
+                adid = #{adid,jdbcType=VARCHAR},
+            </if>
+            <if test="channelKeyword != null">
+                channel_keyword = #{channelKeyword,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="lpPage != null">
+                lp_page = #{lpPage,jdbcType=VARCHAR},
+            </if>
+            <if test="putLink != null">
+                put_link = #{putLink,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                platform = #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="ChannelResultMap">
+        select
+        <include refid="Channel_Column_List" />
+        from channel
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.Channel">
+        update channel
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                level = #{level,jdbcType=VARCHAR},
+            </if>
+            <if test="adid != null">
+                adid = #{adid,jdbcType=VARCHAR},
+            </if>
+            <if test="channelKeyword != null">
+                channel_keyword = #{channelKeyword,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="lpPage != null">
+                lp_page = #{lpPage,jdbcType=VARCHAR},
+            </if>
+            <if test="putLink != null">
+                put_link = #{putLink,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                platform = #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.SysEnumMapper">
+    <resultMap id="SysEnumResultMap" type="cn.onlyhi.client.po.SysEnum">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="enum_type" jdbcType="VARCHAR" property="enumType" />
+        <result column="enum_name" jdbcType="VARCHAR" property="enumName" />
+        <result column="enum_value" jdbcType="VARCHAR" property="enumValue" />
+        <result column="is_985" jdbcType="INTEGER" property="is985" />
+        <result column="enabled" jdbcType="INTEGER" property="enabled" />
+        <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="version" jdbcType="VARCHAR" property="version" />
+    </resultMap>
+    <sql id="SysEnum_Column_List">
+        id, uuid, enum_type, enum_name, enum_value, is_985, enabled, create_user_id, create_date, 
+        update_user_id, update_date, version
+    </sql>
+    <select id="findByEnumType" parameterType="java.lang.String" resultMap="SysEnumResultMap">
+        select
+        <include refid="SysEnum_Column_List" />
+        from sys_enum
+        where enabled=0 and enum_type=#{enumType}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="SysEnumResultMap">
+        select 
+        <include refid="SysEnum_Column_List" />
+        from sys_enum
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from sys_enum
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.SysEnum">
+        insert into sys_enum
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="enumType != null">
+                enum_type,
+            </if>
+            <if test="enumName != null">
+                enum_name,
+            </if>
+            <if test="enumValue != null">
+                enum_value,
+            </if>
+            <if test="is985 != null">
+                is_985,
+            </if>
+            <if test="enabled != null">
+                enabled,
+            </if>
+            <if test="createUserId != null">
+                create_user_id,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateUserId != null">
+                update_user_id,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="enumType != null">
+                #{enumType,jdbcType=VARCHAR},
+            </if>
+            <if test="enumName != null">
+                #{enumName,jdbcType=VARCHAR},
+            </if>
+            <if test="enumValue != null">
+                #{enumValue,jdbcType=VARCHAR},
+            </if>
+            <if test="is985 != null">
+                #{is985,jdbcType=INTEGER},
+            </if>
+            <if test="enabled != null">
+                #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createUserId != null">
+                #{createUserId,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                #{updateUserId,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.SysEnum">
+        update sys_enum
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="enumType != null">
+                enum_type = #{enumType,jdbcType=VARCHAR},
+            </if>
+            <if test="enumName != null">
+                enum_name = #{enumName,jdbcType=VARCHAR},
+            </if>
+            <if test="enumValue != null">
+                enum_value = #{enumValue,jdbcType=VARCHAR},
+            </if>
+            <if test="is985 != null">
+                is_985 = #{is985,jdbcType=INTEGER},
+            </if>
+            <if test="enabled != null">
+                enabled = #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createUserId != null">
+                create_user_id = #{createUserId,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="SysEnumResultMap">
+        select 
+        <include refid="SysEnum_Column_List" />
+        from sys_enum
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.SysEnum">
+        update sys_enum
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="enumType != null">
+                enum_type = #{enumType,jdbcType=VARCHAR},
+            </if>
+            <if test="enumName != null">
+                enum_name = #{enumName,jdbcType=VARCHAR},
+            </if>
+            <if test="enumValue != null">
+                enum_value = #{enumValue,jdbcType=VARCHAR},
+            </if>
+            <if test="is985 != null">
+                is_985 = #{is985,jdbcType=INTEGER},
+            </if>
+            <if test="enabled != null">
+                enabled = #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createUserId != null">
+                create_user_id = #{createUserId,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

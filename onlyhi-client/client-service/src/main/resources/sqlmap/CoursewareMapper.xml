@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.onlyhi.client.dao.CoursewareMapper">
+    <resultMap id="CoursewareResultMap" type="cn.onlyhi.client.po.Courseware">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="courseware_uuid" jdbcType="VARCHAR" property="coursewareUuid"/>
+        <result column="course_version_uuid" jdbcType="VARCHAR" property="courseVersionUuid"/>
+        <result column="teacher_uuid" jdbcType="VARCHAR" property="teacherUuid"/>
+        <result column="courseware_url" jdbcType="VARCHAR" property="coursewareUrl"/>
+        <result column="courseware_path" jdbcType="VARCHAR" property="coursewarePath"/>
+        <result column="original_name" jdbcType="VARCHAR" property="originalName"/>
+        <result column="courseware_name" jdbcType="VARCHAR" property="coursewareName"/>
+        <result column="courseware_type" jdbcType="VARCHAR" property="coursewareType"/>
+        <result column="conver_status" jdbcType="INTEGER" property="converStatus"/>
+        <result column="pdf_name" jdbcType="VARCHAR" property="pdfName"/>
+        <result column="page_num" jdbcType="INTEGER" property="pageNum"/>
+        <result column="subject" jdbcType="VARCHAR" property="subject"/>
+        <result column="grade" jdbcType="VARCHAR" property="grade"/>
+        <result column="course_knowledge_uuid" jdbcType="VARCHAR" property="courseKnowledgeUuid"/>
+        <result column="course_classes" jdbcType="INTEGER" property="courseClasses"/>
+        <result column="courseware_preview_url" jdbcType="VARCHAR" property="coursewarePreviewUrl"/>
+        <result column="course_knowledge_uuids" jdbcType="VARCHAR" property="courseKnowledgeUuids"/>
+        <result column="courseware_dir_uuid" jdbcType="VARCHAR" property="coursewareDirUuid"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_uid" jdbcType="VARCHAR" property="createUid"/>
+        <result column="update_uid" jdbcType="VARCHAR" property="updateUid"/>
+        <result column="stream_md5" jdbcType="VARCHAR" property="streamMd5"/>
+    </resultMap>
+    <sql id="Courseware_Column_List">
+        id, courseware_uuid, course_version_uuid, teacher_uuid, courseware_url, courseware_path,
+        original_name, courseware_name, courseware_type, conver_status, pdf_name, page_num,
+        subject, grade, course_knowledge_uuid, course_classes, courseware_preview_url, course_knowledge_uuids,
+        courseware_dir_uuid, status, sort, remark, create_time, update_time, create_uid,
+        update_uid, stream_md5
+    </sql>
+    <select id="findTeacherCouresewaresByCreateTime" resultType="cn.onlyhi.client.dto.CoursewareDto">
+        select
+        c.create_time
+        ,t.tc_name as teacherName
+        ,c.conver_status
+        ,c.original_name
+        ,c.courseware_name
+        ,c.`status`
+        ,c.update_time
+        ,c.courseware_url
+        ,c.courseware_preview_url
+        ,c.courseware_uuid
+        from courseware c
+        LEFT JOIN tc_teacher t on t.uuid=c.teacher_uuid
+        where c.courseware_type='TEACHER' and t.tc_name not LIKE 'test%' and t.tc_name not LIKE '%测试%' and t.tc_name NOT like '%演示%'
+        and c.create_time > #{startDate} and c.create_time  <![CDATA[ < ]]>  #{endDate}
+    </select>
+    <select id="findByCoursewareName" resultMap="CoursewareResultMap">
+        select
+        <include refid="Courseware_Column_List"/>
+        from courseware
+        where status=1 and teacher_uuid=#{teacherUuid} and courseware_name =#{coursewareName} limit 1
+    </select>
+    <select id="findLikeByCoursewareName" resultMap="CoursewareResultMap">
+        select
+        <include refid="Courseware_Column_List"/>
+        from courseware
+        where status=1 and teacher_uuid=#{teacherUuid} and courseware_name like "%"#{coursewareName}"%"
+        order by create_time desc
+    </select>
+    <update id="deleteByCoursewareDirUuid">
+        update courseware set status=0 where status=1 and courseware_dir_uuid=#{coursewareDirUuid}
+    </update>
+    <update id="updateCoursewareDir">
+        update courseware set courseware_dir_uuid=#{coursewareDirUuid} where courseware_uuid=#{coursewareUuid}
+    </update>
+    <select id="findRootByTeacherUuid" resultMap="CoursewareResultMap">
+        select
+        <include refid="Courseware_Column_List"/>
+        from courseware
+        where status=1 and courseware_dir_uuid is NULL and teacher_uuid=#{teacherUuid}
+        order by ${orderBy} ${orderSort}
+    </select>
+    <select id="findByCoursewareDirUuid" resultMap="CoursewareResultMap">
+        select
+        <include refid="Courseware_Column_List"/>
+        from courseware
+        where status=1 and courseware_dir_uuid=#{coursewareDirUuid}
+        order by ${orderBy} ${orderSort}
+    </select>
+    <select id="findByTeacherUuid" resultMap="CoursewareResultMap">
+        select
+        <include refid="Courseware_Column_List"/>
+        from courseware
+        where status=1 and teacher_uuid=#{teacherUuid}
+        order by ${orderBy} ${orderSort}
+    </select>
+    <select id="findLikeByCoursewareNameAndSuffix" resultType="java.lang.String">
+        select courseware_name from courseware where status=1 and courseware_name REGEXP
+        '${fileName}\\(+[0-9]*\\)+.${suffix}'
+        <if test="teacherUuid !='' and teacherUuid != null">
+            and teacher_uuid=#{teacherUuid}
+        </if>
+    </select>
+    <select id="selectTeacherCoursewareCount" resultType="java.lang.Long">
+        select count(*)
+        from courseware c
+        where c.courseware_type = 'TEACHER' and c.status=1
+        <if test="paramMap.coursewareName !=null">
+            and c.original_name LIKE "%"#{paramMap.coursewareName}"%"
+        </if>
+    </select>
+    <select id="selectSysCoursewareCount" resultType="java.lang.Long">
+        select count(*)
+        from courseware c
+        where c.courseware_type = 'SYSTEM' and c.status=1
+        <if test="paramMap.coursewareName !=null">
+            and c.courseware_name LIKE "%"#{paramMap.coursewareName}"%"
+        </if>
+        <if test="paramMap.subject !=null">
+            and c.subject = #{paramMap.subject}
+        </if>
+        <if test="paramMap.grade !=null">
+            and c.grade = #{paramMap.grade}
+        </if>
+        <if test="paramMap.courseClasses !=null">
+            and c.courseClasses = #{paramMap.courseClasses}
+        </if>
+    </select>
+    <select id="selectSysCourseware" resultType="cn.onlyhi.client.dto.CoursewareDto">
+        select
+        c.courseware_uuid
+        ,c.status
+        ,c.remark
+        ,c.create_time
+        ,c.update_time
+        ,c.subject
+        ,c.grade
+        ,c.course_classes
+        ,c.courseware_name
+        ,c.courseware_preview_url
+        ,u.name as create_user
+        ,ck.knowledge_name as course_knowledge_name
+        ,cv.version as courseware_version
+        ,c.original_name
+        ,c.courseware_url
+        ,c.page_num
+        from courseware c
+        left join user u on u.uuid = c.create_uid and u.status=1
+        left join course_knowledge ck on ck.course_knowledge_uuid = c.course_knowledge_uuid and ck.status=1
+        left join cp_course_version cv on cv.uuid = ck.course_version_uuid and cv.status=1
+        where c.courseware_type = 'SYSTEM' and c.status=1
+        <if test="paramMap.coursewareName !=null">
+            and c.courseware_name LIKE "%"#{paramMap.coursewareName}"%"
+        </if>
+        <if test="paramMap.subject !=null">
+            and c.subject = #{paramMap.subject}
+        </if>
+        <if test="paramMap.grade !=null">
+            and c.grade = #{paramMap.grade}
+        </if>
+        <if test="paramMap.courseClasses !=null">
+            and c.courseClasses = #{paramMap.courseClasses}
+        </if>
+        order by c.create_time desc
+        limit #{startSize},#{pageSize}
+    </select>
+    <delete id="deleteCourseware">
+        update courseware set status=0 where courseware_uuid=#{courseware_uuid,jdbcType=VARCHAR}
+    </delete>
+    <select id="selectByTeacherUuid" resultMap="CoursewareResultMap">
+        select
+        <include refid="Courseware_Column_List"/>
+        from courseware
+        where status=1 and teacher_uuid = #{teacherUuid,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="CoursewareResultMap">
+        select
+        <include refid="Courseware_Column_List"/>
+        from courseware
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from courseware
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.Courseware">
+        insert into courseware
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="coursewareUuid != null">
+                courseware_uuid,
+            </if>
+            <if test="courseVersionUuid != null">
+                course_version_uuid,
+            </if>
+            <if test="teacherUuid != null">
+                teacher_uuid,
+            </if>
+            <if test="coursewareUrl != null">
+                courseware_url,
+            </if>
+            <if test="coursewarePath != null">
+                courseware_path,
+            </if>
+            <if test="originalName != null">
+                original_name,
+            </if>
+            <if test="coursewareName != null">
+                courseware_name,
+            </if>
+            <if test="coursewareType != null">
+                courseware_type,
+            </if>
+            <if test="converStatus != null">
+                conver_status,
+            </if>
+            <if test="pdfName != null">
+                pdf_name,
+            </if>
+            <if test="pageNum != null">
+                page_num,
+            </if>
+            <if test="subject != null">
+                subject,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="courseKnowledgeUuid != null">
+                course_knowledge_uuid,
+            </if>
+            <if test="courseClasses != null">
+                course_classes,
+            </if>
+            <if test="coursewarePreviewUrl != null">
+                courseware_preview_url,
+            </if>
+            <if test="courseKnowledgeUuids != null">
+                course_knowledge_uuids,
+            </if>
+            <if test="coursewareDirUuid != null">
+                courseware_dir_uuid,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createUid != null">
+                create_uid,
+            </if>
+            <if test="updateUid != null">
+                update_uid,
+            </if>
+            <if test="streamMd5 != null">
+                stream_md5,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="coursewareUuid != null">
+                #{coursewareUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseVersionUuid != null">
+                #{courseVersionUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherUuid != null">
+                #{teacherUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareUrl != null">
+                #{coursewareUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewarePath != null">
+                #{coursewarePath,jdbcType=VARCHAR},
+            </if>
+            <if test="originalName != null">
+                #{originalName,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareName != null">
+                #{coursewareName,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareType != null">
+                #{coursewareType,jdbcType=VARCHAR},
+            </if>
+            <if test="converStatus != null">
+                #{converStatus,jdbcType=INTEGER},
+            </if>
+            <if test="pdfName != null">
+                #{pdfName,jdbcType=VARCHAR},
+            </if>
+            <if test="pageNum != null">
+                #{pageNum,jdbcType=INTEGER},
+            </if>
+            <if test="subject != null">
+                #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="courseKnowledgeUuid != null">
+                #{courseKnowledgeUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseClasses != null">
+                #{courseClasses,jdbcType=INTEGER},
+            </if>
+            <if test="coursewarePreviewUrl != null">
+                #{coursewarePreviewUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="courseKnowledgeUuids != null">
+                #{courseKnowledgeUuids,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareDirUuid != null">
+                #{coursewareDirUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                #{updateUid,jdbcType=VARCHAR},
+            </if>
+            <if test="streamMd5 != null">
+                #{streamMd5,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.Courseware">
+        update courseware
+        <set>
+            <if test="coursewareUuid != null">
+                courseware_uuid = #{coursewareUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseVersionUuid != null">
+                course_version_uuid = #{courseVersionUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherUuid != null">
+                teacher_uuid = #{teacherUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareUrl != null">
+                courseware_url = #{coursewareUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewarePath != null">
+                courseware_path = #{coursewarePath,jdbcType=VARCHAR},
+            </if>
+            <if test="originalName != null">
+                original_name = #{originalName,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareName != null">
+                courseware_name = #{coursewareName,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareType != null">
+                courseware_type = #{coursewareType,jdbcType=VARCHAR},
+            </if>
+            <if test="converStatus != null">
+                conver_status = #{converStatus,jdbcType=INTEGER},
+            </if>
+            <if test="pdfName != null">
+                pdf_name = #{pdfName,jdbcType=VARCHAR},
+            </if>
+            <if test="pageNum != null">
+                page_num = #{pageNum,jdbcType=INTEGER},
+            </if>
+            <if test="subject != null">
+                subject = #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="courseKnowledgeUuid != null">
+                course_knowledge_uuid = #{courseKnowledgeUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseClasses != null">
+                course_classes = #{courseClasses,jdbcType=INTEGER},
+            </if>
+            <if test="coursewarePreviewUrl != null">
+                courseware_preview_url = #{coursewarePreviewUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="courseKnowledgeUuids != null">
+                course_knowledge_uuids = #{courseKnowledgeUuids,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareDirUuid != null">
+                courseware_dir_uuid = #{coursewareDirUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="CoursewareResultMap">
+        select
+        <include refid="Courseware_Column_List"/>
+        from courseware
+        where courseware_uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.Courseware">
+        update courseware
+        <set>
+            <if test="coursewareUuid != null">
+                courseware_uuid = #{coursewareUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseVersionUuid != null">
+                course_version_uuid = #{courseVersionUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherUuid != null">
+                teacher_uuid = #{teacherUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareUrl != null">
+                courseware_url = #{coursewareUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewarePath != null">
+                courseware_path = #{coursewarePath,jdbcType=VARCHAR},
+            </if>
+            <if test="originalName != null">
+                original_name = #{originalName,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareName != null">
+                courseware_name = #{coursewareName,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareType != null">
+                courseware_type = #{coursewareType,jdbcType=VARCHAR},
+            </if>
+            <if test="converStatus != null">
+                conver_status = #{converStatus,jdbcType=INTEGER},
+            </if>
+            <if test="pdfName != null">
+                pdf_name = #{pdfName,jdbcType=VARCHAR},
+            </if>
+            <if test="pageNum != null">
+                page_num = #{pageNum,jdbcType=INTEGER},
+            </if>
+            <if test="subject != null">
+                subject = #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="courseKnowledgeUuid != null">
+                course_knowledge_uuid = #{courseKnowledgeUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseClasses != null">
+                course_classes = #{courseClasses,jdbcType=INTEGER},
+            </if>
+            <if test="coursewarePreviewUrl != null">
+                courseware_preview_url = #{coursewarePreviewUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="courseKnowledgeUuids != null">
+                course_knowledge_uuids = #{courseKnowledgeUuids,jdbcType=VARCHAR},
+            </if>
+            <if test="coursewareDirUuid != null">
+                courseware_dir_uuid = #{coursewareDirUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where courseware_uuid = #{coursewareUuid,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByMD5" parameterType="cn.onlyhi.client.po.Courseware" resultType="java.lang.Integer">
+        SELECT count(stream_md5) from courseware where status=1 and stream_md5=#{streamMD5,jdbcType=VARCHAR} and teacher_uuid=#{teacherUuid,jdbcType=VARCHAR}
+    </select>
+</mapper>

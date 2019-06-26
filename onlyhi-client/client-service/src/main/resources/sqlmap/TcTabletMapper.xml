@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.TcTabletMapper">
+    <resultMap id="TcTabletResultMap" type="cn.onlyhi.client.po.TcTablet">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="tc_name" jdbcType="VARCHAR" property="tcName" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="province" jdbcType="CHAR" property="province" />
+        <result column="city" jdbcType="CHAR" property="city" />
+        <result column="district" jdbcType="CHAR" property="district" />
+        <result column="post_address" jdbcType="VARCHAR" property="postAddress" />
+        <result column="is_order" jdbcType="INTEGER" property="isOrder" />
+        <result column="status" jdbcType="BIT" property="status" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    </resultMap>
+    <sql id="TcTablet_Column_List">
+        id, uuid, tc_name, phone, province, city, district, post_address, is_order, status, 
+        create_date, update_date
+    </sql>
+    <select id="findByPhone" parameterType="java.lang.String" resultMap="TcTabletResultMap">
+        select
+        <include refid="TcTablet_Column_List" />
+        from tc_tablet
+        where status=1 and phone=#{phone}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="TcTabletResultMap">
+        select 
+        <include refid="TcTablet_Column_List" />
+        from tc_tablet
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from tc_tablet
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.TcTablet">
+        insert into tc_tablet
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="tcName != null">
+                tc_name,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="district != null">
+                district,
+            </if>
+            <if test="postAddress != null">
+                post_address,
+            </if>
+            <if test="isOrder != null">
+                is_order,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="tcName != null">
+                #{tcName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=CHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=CHAR},
+            </if>
+            <if test="district != null">
+                #{district,jdbcType=CHAR},
+            </if>
+            <if test="postAddress != null">
+                #{postAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="isOrder != null">
+                #{isOrder,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.TcTablet">
+        update tc_tablet
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="tcName != null">
+                tc_name = #{tcName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=CHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=CHAR},
+            </if>
+            <if test="district != null">
+                district = #{district,jdbcType=CHAR},
+            </if>
+            <if test="postAddress != null">
+                post_address = #{postAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="isOrder != null">
+                is_order = #{isOrder,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="TcTabletResultMap">
+        select 
+        <include refid="TcTablet_Column_List" />
+        from tc_tablet
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.TcTablet">
+        update tc_tablet
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="tcName != null">
+                tc_name = #{tcName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=CHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=CHAR},
+            </if>
+            <if test="district != null">
+                district = #{district,jdbcType=CHAR},
+            </if>
+            <if test="postAddress != null">
+                post_address = #{postAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="isOrder != null">
+                is_order = #{isOrder,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

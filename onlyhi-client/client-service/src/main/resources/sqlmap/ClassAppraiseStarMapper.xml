@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.ClassAppraiseStarMapper">
+    <resultMap id="ClassAppraiseStarResultMap" type="cn.onlyhi.client.po.ClassAppraiseStar">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="class_appraise_star_uuid" jdbcType="VARCHAR" property="classAppraiseStarUuid" />
+        <result column="star" jdbcType="INTEGER" property="star" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="create_uid" jdbcType="VARCHAR" property="createUid" />
+        <result column="update_uid" jdbcType="VARCHAR" property="updateUid" />
+    </resultMap>
+    <sql id="ClassAppraiseStar_Column_List">
+        id, class_appraise_star_uuid, star, content, status, sort, remark, create_time, update_time, 
+        create_uid, update_uid
+    </sql>
+    <select id="findContentsByUuids" parameterType="java.util.List" resultType="java.lang.String">
+        select content
+        from class_appraise_star
+        where status=1 and class_appraise_star_uuid in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="findByStar" parameterType="java.lang.Integer" resultMap="ClassAppraiseStarResultMap">
+        select
+        <include refid="ClassAppraiseStar_Column_List" />
+        from class_appraise_star
+        where status=1 and star=#{star}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ClassAppraiseStarResultMap">
+        select 
+        <include refid="ClassAppraiseStar_Column_List" />
+        from class_appraise_star
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from class_appraise_star
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.ClassAppraiseStar">
+        insert into class_appraise_star
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="classAppraiseStarUuid != null">
+                class_appraise_star_uuid,
+            </if>
+            <if test="star != null">
+                star,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createUid != null">
+                create_uid,
+            </if>
+            <if test="updateUid != null">
+                update_uid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="classAppraiseStarUuid != null">
+                #{classAppraiseStarUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="star != null">
+                #{star,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.ClassAppraiseStar">
+        update class_appraise_star
+        <set>
+            <if test="classAppraiseStarUuid != null">
+                class_appraise_star_uuid = #{classAppraiseStarUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="star != null">
+                star = #{star,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="ClassAppraiseStarResultMap">
+        select 
+        <include refid="ClassAppraiseStar_Column_List" />
+        from class_appraise_star
+        where class_appraise_star_uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.ClassAppraiseStar">
+        update class_appraise_star
+        <set>
+            <if test="classAppraiseStarUuid != null">
+                class_appraise_star_uuid = #{classAppraiseStarUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="star != null">
+                star = #{star,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where class_appraise_star_uuid = #{classAppraiseStarUuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd          
+    http://code.alibabatech.com/schema/dubbo          
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+    <dubbo:application name="client-rest"/>
+    <dubbo:registry address="${dubbo.registry.address}"/>
+
+    <!-- 生成远程服务代理，可以和本地bean一样使用xxxService -->
+    <dubbo:reference id="appColumnService" interface="cn.onlyhi.client.service.AppColumnService"  check="false" />
+    <dubbo:reference id="appInfoService" interface="cn.onlyhi.client.service.AppInfoService"  check="false" />
+    <dubbo:reference id="articleService" interface="cn.onlyhi.client.service.ArticleService"  check="false" />
+    <dubbo:reference id="bannerService" interface="cn.onlyhi.client.service.BannerService"  check="false" />
+    <dubbo:reference id="channelService" interface="cn.onlyhi.client.service.ChannelService"  check="false" />
+    <dubbo:reference id="classRecordService" interface="cn.onlyhi.client.service.ClassRecordService"  check="false" />
+    <dubbo:reference id="classRoomService" interface="cn.onlyhi.client.service.ClassRoomService"  check="false" />
+    <dubbo:reference id="coursePriceBaiduCodeService" interface="cn.onlyhi.client.service.CoursePriceBaiduCodeService"  check="false" />
+    <dubbo:reference id="coursewareImageService" interface="cn.onlyhi.client.service.CoursewareImageService"  check="false" />
+    <dubbo:reference id="coursewareService" interface="cn.onlyhi.client.service.CoursewareService"  check="false" />
+    <dubbo:reference id="cpCoursePriceService" interface="cn.onlyhi.client.service.CpCoursePriceService"  check="false" />
+    <dubbo:reference id="cpCourseService" interface="cn.onlyhi.client.service.CpCourseService"  check="false" />
+    <dubbo:reference id="cpCourseVersionService" interface="cn.onlyhi.client.service.CpCourseVersionService"  check="false" />
+    <dubbo:reference id="cpPayRequestService" interface="cn.onlyhi.client.service.CpPayRequestService"  check="false" />
+    <dubbo:reference id="leadsExtService" interface="cn.onlyhi.client.service.LeadsExtService"  check="false" />
+    <dubbo:reference id="leadsLogService" interface="cn.onlyhi.client.service.LeadsLogService"  check="false" />
+    <dubbo:reference id="leadsService" interface="cn.onlyhi.client.service.LeadsService"  check="false" />
+    <dubbo:reference id="messageService" interface="cn.onlyhi.client.service.MessageService"  check="false" />
+    <dubbo:reference id="messageSendRecordService" interface="cn.onlyhi.client.service.MessageSendRecordService"  check="false" />
+    <dubbo:reference id="messageSendTemplateService" interface="cn.onlyhi.client.service.MessageSendTemplateService"  check="false" />
+    <dubbo:reference id="patriarchLeadsRecordService" interface="cn.onlyhi.client.service.PatriarchLeadsRecordService"  check="false" />
+    <dubbo:reference id="patriarchLeadsService" interface="cn.onlyhi.client.service.PatriarchLeadsService"  check="false" />
+    <dubbo:reference id="patriarchService" interface="cn.onlyhi.client.service.PatriarchService"  check="false" />
+    <dubbo:reference id="promotionCodeService" interface="cn.onlyhi.client.service.PromotionCodeService"  check="false" />
+    <dubbo:reference id="pushMessageService" interface="cn.onlyhi.client.service.PushMessageService"  check="false" />
+    <dubbo:reference id="redisService" interface="cn.onlyhi.client.service.RedisService"  check="false" />
+    <dubbo:reference id="studentService" interface="cn.onlyhi.client.service.StudentService"  check="false" />
+    <dubbo:reference id="systemLogService" interface="cn.onlyhi.client.service.SystemLogService"  check="false" />
+    <dubbo:reference id="tcTeacherService" interface="cn.onlyhi.client.service.TcTeacherService"  check="false" />
+    <dubbo:reference id="teacherRecommendService" interface="cn.onlyhi.client.service.TeacherRecommendService"  check="false" />
+    <dubbo:reference id="userFeedbackService" interface="cn.onlyhi.client.service.UserFeedbackService"  check="false" />
+    <dubbo:reference id="userQqService" interface="cn.onlyhi.client.service.UserQqService"  check="false" />
+    <dubbo:reference id="userSinamicroblogService" interface="cn.onlyhi.client.service.UserSinamicroblogService"  check="false" />
+    <dubbo:reference id="userWechatService" interface="cn.onlyhi.client.service.UserWechatService"  check="false" />
+    <dubbo:reference id="classAppraiseService" interface="cn.onlyhi.client.service.ClassAppraiseService"  check="false" />
+    <dubbo:reference id="classAppraiseStarService" interface="cn.onlyhi.client.service.ClassAppraiseStarService" check="false"/>
+    <dubbo:reference id="courseLeadsService" interface="cn.onlyhi.client.service.CourseLeadsService" check="false"/>
+    <dubbo:reference id="userService" interface="cn.onlyhi.client.service.UserService" check="false"/>
+    <dubbo:reference id="roleService" interface="cn.onlyhi.client.service.RoleService" check="false"/>
+    <dubbo:reference id="classMateService" interface="cn.onlyhi.client.service.ClassMateService" check="false"/>
+    <dubbo:reference id="userEasemobService" interface="cn.onlyhi.client.service.UserEasemobService" check="false"/>
+    <dubbo:reference id="classRecordDataService" interface="cn.onlyhi.client.service.ClassRecordDataService" check="false"/>
+    <dubbo:reference id="technicalAssistanceService" interface="cn.onlyhi.client.service.TechnicalAssistanceService" check="false"/>
+    <dubbo:reference id="userNeteaseimService" interface="cn.onlyhi.client.service.UserNeteaseimService" check="false"/>
+    <dubbo:reference id="tcPayGradeService" interface="cn.onlyhi.client.service.TcPayGradeService" check="false"/>
+    <dubbo:reference id="teacherFreetimetemplateService" interface="cn.onlyhi.client.service.TeacherFreetimetemplateService" check="false"/>
+    <dubbo:reference id="tcTeacherDateService" interface="cn.onlyhi.client.service.TcTeacherDateService" check="false"/>
+	<dubbo:reference id="classTeacherAppraiseService" interface="cn.onlyhi.client.service.ClassTeacherAppraiseService" check="false"/>
+	<dubbo:reference id="sysAreaService" interface="cn.onlyhi.client.service.SysAreaService" check="false"/>
+	<dubbo:reference id="tcTeacherFileService" interface="cn.onlyhi.client.service.TcTeacherFileService" check="false"/>
+	<dubbo:reference id="tcTeacherSchoolService" interface="cn.onlyhi.client.service.TcTeacherSchoolService" check="false"/>
+	<dubbo:reference id="sysEnumService" interface="cn.onlyhi.client.service.SysEnumService" check="false"/>
+	<dubbo:reference id="userDeviceInformationService" interface="cn.onlyhi.client.service.UserDeviceInformationService" check="false"/>
+	<dubbo:reference id="agoraCallLogService" interface="cn.onlyhi.client.service.AgoraCallLogService" check="false"/>
+	<dubbo:reference id="tcTabletService" interface="cn.onlyhi.client.service.TcTabletService" check="false"/>
+	<dubbo:reference id="coursewareDirService" interface="cn.onlyhi.client.service.CoursewareDirService" check="false"/>
+	<dubbo:reference id="leadsSignService" interface="cn.onlyhi.client.service.LeadsSignService" check="false"/>
+	<dubbo:reference id="leadsSignRecordService" interface="cn.onlyhi.client.service.LeadsSignRecordService" check="false"/>
+	<dubbo:reference id="teacherFreetimeRecordService" interface="cn.onlyhi.client.service.TeacherFreetimeRecordService" check="false"/>
+</beans>

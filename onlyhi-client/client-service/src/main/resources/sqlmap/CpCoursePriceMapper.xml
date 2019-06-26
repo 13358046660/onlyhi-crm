@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.CpCoursePriceMapper">
+    <resultMap id="CpCoursePriceResultMap" type="cn.onlyhi.client.po.CpCoursePrice">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="baidu_course_code" jdbcType="VARCHAR" property="baiduCourseCode" />
+        <result column="taobao_link" jdbcType="VARCHAR" property="taobaoLink" />
+        <result column="level" jdbcType="VARCHAR" property="level" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="length" jdbcType="INTEGER" property="length" />
+        <result column="original_unit_price" jdbcType="DECIMAL" property="originalUnitPrice" />
+        <result column="original_price" jdbcType="DECIMAL" property="originalPrice" />
+        <result column="now_unit_price" jdbcType="DECIMAL" property="nowUnitPrice" />
+        <result column="now_price" jdbcType="DECIMAL" property="nowPrice" />
+        <result column="special_discount" jdbcType="DECIMAL" property="specialDiscount" />
+        <result column="special_price" jdbcType="DECIMAL" property="specialPrice" />
+        <result column="online_status" jdbcType="TINYINT" property="onlineStatus" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="creater" jdbcType="VARCHAR" property="creater" />
+        <result column="updater" jdbcType="VARCHAR" property="updater" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="activity_type" jdbcType="VARCHAR" property="activityType" />
+    </resultMap>
+    <sql id="CpCoursePrice_Column_List">
+        id, uuid, baidu_course_code, taobao_link, level, type, length, original_unit_price, 
+        original_price, now_unit_price, now_price, special_discount, special_price, online_status, 
+        create_date, update_date, creater, updater, description, activity_type
+    </sql>
+    <select id="findCoursePriceTypeListByActivityType" resultType="cn.onlyhi.client.dto.CoursePriceTypeDto">
+        select DISTINCT type from cp_course_price where activity_type=#{activityType} and online_status=1;
+    </select>
+    <select id="findCoursePriceListByActivityTypeAndType" resultMap="CpCoursePriceResultMap">
+        SELECT
+        <include refid="CpCoursePrice_Column_List"/>
+        from cp_course_price
+        where type=#{type} and activity_type=#{activityType} and online_status=1;
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="CpCoursePriceResultMap">
+        select 
+        <include refid="CpCoursePrice_Column_List" />
+        from cp_course_price
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from cp_course_price
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.CpCoursePrice">
+        insert into cp_course_price
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="baiduCourseCode != null">
+                baidu_course_code,
+            </if>
+            <if test="taobaoLink != null">
+                taobao_link,
+            </if>
+            <if test="level != null">
+                level,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="length != null">
+                length,
+            </if>
+            <if test="originalUnitPrice != null">
+                original_unit_price,
+            </if>
+            <if test="originalPrice != null">
+                original_price,
+            </if>
+            <if test="nowUnitPrice != null">
+                now_unit_price,
+            </if>
+            <if test="nowPrice != null">
+                now_price,
+            </if>
+            <if test="specialDiscount != null">
+                special_discount,
+            </if>
+            <if test="specialPrice != null">
+                special_price,
+            </if>
+            <if test="onlineStatus != null">
+                online_status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="activityType != null">
+                activity_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="baiduCourseCode != null">
+                #{baiduCourseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taobaoLink != null">
+                #{taobaoLink,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                #{level,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="length != null">
+                #{length,jdbcType=INTEGER},
+            </if>
+            <if test="originalUnitPrice != null">
+                #{originalUnitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="originalPrice != null">
+                #{originalPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="nowUnitPrice != null">
+                #{nowUnitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="nowPrice != null">
+                #{nowPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="specialDiscount != null">
+                #{specialDiscount,jdbcType=DECIMAL},
+            </if>
+            <if test="specialPrice != null">
+                #{specialPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="onlineStatus != null">
+                #{onlineStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="activityType != null">
+                #{activityType,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.CpCoursePrice">
+        update cp_course_price
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="baiduCourseCode != null">
+                baidu_course_code = #{baiduCourseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taobaoLink != null">
+                taobao_link = #{taobaoLink,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                level = #{level,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="length != null">
+                length = #{length,jdbcType=INTEGER},
+            </if>
+            <if test="originalUnitPrice != null">
+                original_unit_price = #{originalUnitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="originalPrice != null">
+                original_price = #{originalPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="nowUnitPrice != null">
+                now_unit_price = #{nowUnitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="nowPrice != null">
+                now_price = #{nowPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="specialDiscount != null">
+                special_discount = #{specialDiscount,jdbcType=DECIMAL},
+            </if>
+            <if test="specialPrice != null">
+                special_price = #{specialPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="onlineStatus != null">
+                online_status = #{onlineStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="activityType != null">
+                activity_type = #{activityType,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="CpCoursePriceResultMap">
+        select 
+        <include refid="CpCoursePrice_Column_List" />
+        from cp_course_price
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.CpCoursePrice">
+        update cp_course_price
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="baiduCourseCode != null">
+                baidu_course_code = #{baiduCourseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="taobaoLink != null">
+                taobao_link = #{taobaoLink,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                level = #{level,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="length != null">
+                length = #{length,jdbcType=INTEGER},
+            </if>
+            <if test="originalUnitPrice != null">
+                original_unit_price = #{originalUnitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="originalPrice != null">
+                original_price = #{originalPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="nowUnitPrice != null">
+                now_unit_price = #{nowUnitPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="nowPrice != null">
+                now_price = #{nowPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="specialDiscount != null">
+                special_discount = #{specialDiscount,jdbcType=DECIMAL},
+            </if>
+            <if test="specialPrice != null">
+                special_price = #{specialPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="onlineStatus != null">
+                online_status = #{onlineStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="activityType != null">
+                activity_type = #{activityType,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.StudentMapper">
+    <resultMap id="StudentResultMap" type="cn.onlyhi.client.po.Student">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="stu_no" jdbcType="VARCHAR" property="stuNo" />
+        <result column="Lead_Uuid" jdbcType="VARCHAR" property="leadUuid" />
+        <result column="teacher_uuid" jdbcType="VARCHAR" property="teacherUuid" />
+        <result column="first_course_uuid" jdbcType="VARCHAR" property="firstCourseUuid" />
+        <result column="cc_uuid" jdbcType="VARCHAR" property="ccUuid" />
+        <result column="cr_uuid" jdbcType="VARCHAR" property="crUuid" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="grade" jdbcType="VARCHAR" property="grade" />
+        <result column="subject" jdbcType="VARCHAR" property="subject" />
+        <result column="is_handout" jdbcType="BIT" property="isHandout" />
+        <result column="is_introduced" jdbcType="BIT" property="isIntroduced" />
+        <result column="introducer" jdbcType="VARCHAR" property="introducer" />
+        <result column="is_first_course" jdbcType="BIT" property="isFirstCourse" />
+        <result column="handout_des" jdbcType="VARCHAR" property="handoutDes" />
+        <result column="is_distribution" jdbcType="BIT" property="isDistribution" />
+        <result column="is_bound" jdbcType="BIT" property="isBound" />
+        <result column="status" jdbcType="BIT" property="status" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="is_dimission_type" jdbcType="BIT" property="isDimissionType" />
+        <result column="sex" jdbcType="INTEGER" property="sex" />
+        <result column="age" jdbcType="INTEGER" property="age" />
+        <result column="exam_area" jdbcType="VARCHAR" property="examArea" />
+        <result column="key_point" jdbcType="TINYINT" property="keyPoint" />
+        <result column="in_activity" jdbcType="VARCHAR" property="inActivity" />
+        <result column="is_class_end" jdbcType="INTEGER" property="isClassEnd" />
+        <result column="handout_time" jdbcType="TIMESTAMP" property="handoutTime" />
+    </resultMap>
+    <sql id="Student_Column_List">
+        id, stu_no, Lead_Uuid, teacher_uuid, first_course_uuid, cc_uuid, cr_uuid, name, password, 
+        phone, grade, subject, is_handout, is_introduced, introducer, is_first_course, handout_des, 
+        is_distribution, is_bound, status, create_date, update_date, is_dimission_type, sex, 
+        age, exam_area, key_point, in_activity, is_class_end, handout_time
+    </sql>
+    <select id="findByLeadsUuid" resultMap="StudentResultMap">
+        select
+        <include refid="Student_Column_List"/>
+        from student
+        where Lead_Uuid = #{leadUuid}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="StudentResultMap">
+        select 
+        <include refid="Student_Column_List" />
+        from student
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from student
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.Student">
+        insert into student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="stuNo != null">
+                stu_no,
+            </if>
+            <if test="leadUuid != null">
+                Lead_Uuid,
+            </if>
+            <if test="teacherUuid != null">
+                teacher_uuid,
+            </if>
+            <if test="firstCourseUuid != null">
+                first_course_uuid,
+            </if>
+            <if test="ccUuid != null">
+                cc_uuid,
+            </if>
+            <if test="crUuid != null">
+                cr_uuid,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="subject != null">
+                subject,
+            </if>
+            <if test="isHandout != null">
+                is_handout,
+            </if>
+            <if test="isIntroduced != null">
+                is_introduced,
+            </if>
+            <if test="introducer != null">
+                introducer,
+            </if>
+            <if test="isFirstCourse != null">
+                is_first_course,
+            </if>
+            <if test="handoutDes != null">
+                handout_des,
+            </if>
+            <if test="isDistribution != null">
+                is_distribution,
+            </if>
+            <if test="isBound != null">
+                is_bound,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="isDimissionType != null">
+                is_dimission_type,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="age != null">
+                age,
+            </if>
+            <if test="examArea != null">
+                exam_area,
+            </if>
+            <if test="keyPoint != null">
+                key_point,
+            </if>
+            <if test="inActivity != null">
+                in_activity,
+            </if>
+            <if test="isClassEnd != null">
+                is_class_end,
+            </if>
+            <if test="handoutTime != null">
+                handout_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="stuNo != null">
+                #{stuNo,jdbcType=VARCHAR},
+            </if>
+            <if test="leadUuid != null">
+                #{leadUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherUuid != null">
+                #{teacherUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="firstCourseUuid != null">
+                #{firstCourseUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="ccUuid != null">
+                #{ccUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="crUuid != null">
+                #{crUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="subject != null">
+                #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="isHandout != null">
+                #{isHandout,jdbcType=BIT},
+            </if>
+            <if test="isIntroduced != null">
+                #{isIntroduced,jdbcType=BIT},
+            </if>
+            <if test="introducer != null">
+                #{introducer,jdbcType=VARCHAR},
+            </if>
+            <if test="isFirstCourse != null">
+                #{isFirstCourse,jdbcType=BIT},
+            </if>
+            <if test="handoutDes != null">
+                #{handoutDes,jdbcType=VARCHAR},
+            </if>
+            <if test="isDistribution != null">
+                #{isDistribution,jdbcType=BIT},
+            </if>
+            <if test="isBound != null">
+                #{isBound,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDimissionType != null">
+                #{isDimissionType,jdbcType=BIT},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="age != null">
+                #{age,jdbcType=INTEGER},
+            </if>
+            <if test="examArea != null">
+                #{examArea,jdbcType=VARCHAR},
+            </if>
+            <if test="keyPoint != null">
+                #{keyPoint,jdbcType=TINYINT},
+            </if>
+            <if test="inActivity != null">
+                #{inActivity,jdbcType=VARCHAR},
+            </if>
+            <if test="isClassEnd != null">
+                #{isClassEnd,jdbcType=INTEGER},
+            </if>
+            <if test="handoutTime != null">
+                #{handoutTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.Student">
+        update student
+        <set>
+            <if test="stuNo != null">
+                stu_no = #{stuNo,jdbcType=VARCHAR},
+            </if>
+            <if test="leadUuid != null">
+                Lead_Uuid = #{leadUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherUuid != null">
+                teacher_uuid = #{teacherUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="firstCourseUuid != null">
+                first_course_uuid = #{firstCourseUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="ccUuid != null">
+                cc_uuid = #{ccUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="crUuid != null">
+                cr_uuid = #{crUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="subject != null">
+                subject = #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="isHandout != null">
+                is_handout = #{isHandout,jdbcType=BIT},
+            </if>
+            <if test="isIntroduced != null">
+                is_introduced = #{isIntroduced,jdbcType=BIT},
+            </if>
+            <if test="introducer != null">
+                introducer = #{introducer,jdbcType=VARCHAR},
+            </if>
+            <if test="isFirstCourse != null">
+                is_first_course = #{isFirstCourse,jdbcType=BIT},
+            </if>
+            <if test="handoutDes != null">
+                handout_des = #{handoutDes,jdbcType=VARCHAR},
+            </if>
+            <if test="isDistribution != null">
+                is_distribution = #{isDistribution,jdbcType=BIT},
+            </if>
+            <if test="isBound != null">
+                is_bound = #{isBound,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDimissionType != null">
+                is_dimission_type = #{isDimissionType,jdbcType=BIT},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="examArea != null">
+                exam_area = #{examArea,jdbcType=VARCHAR},
+            </if>
+            <if test="keyPoint != null">
+                key_point = #{keyPoint,jdbcType=TINYINT},
+            </if>
+            <if test="inActivity != null">
+                in_activity = #{inActivity,jdbcType=VARCHAR},
+            </if>
+            <if test="isClassEnd != null">
+                is_class_end = #{isClassEnd,jdbcType=INTEGER},
+            </if>
+            <if test="handoutTime != null">
+                handout_time = #{handoutTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateGradeByPhone" parameterType="java.lang.String" >
+        UPDATE student set grade=#{grade,jdbcType=VARCHAR} where status=1 and phone=#{phone,jdbcType=VARCHAR}
+    </update>
+</mapper>

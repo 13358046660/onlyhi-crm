@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.UserNeteaseimMapper">
+    <resultMap id="NeteaseimResultMap" type="cn.onlyhi.client.po.UserNeteaseim">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_neteaseim_uuid" jdbcType="VARCHAR" property="userNeteaseimUuid" />
+        <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
+        <result column="user_type" jdbcType="VARCHAR" property="userType" />
+        <result column="netease_accid" jdbcType="VARCHAR" property="neteaseAccid" />
+        <result column="netease_name" jdbcType="VARCHAR" property="neteaseName" />
+        <result column="netease_token" jdbcType="VARCHAR" property="neteaseToken" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="create_uid" jdbcType="VARCHAR" property="createUid" />
+        <result column="update_uid" jdbcType="VARCHAR" property="updateUid" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+    </resultMap>
+    <update id="updateByUserUuid" parameterType="cn.onlyhi.client.po.UserNeteaseim">
+        update user_neteaseim
+        <set>
+            <if test="neteaseToken != null">
+                netease_token = #{neteaseToken,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = now(),
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where user_uuid = #{userUuid,jdbcType=INTEGER}
+    </update>
+</mapper>

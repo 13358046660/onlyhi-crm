@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.LeadsLogMapper">
+    <resultMap id="LeadsLogResultMap" type="cn.onlyhi.client.po.LeadsLog">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="grade" jdbcType="VARCHAR" property="grade" />
+        <result column="subject" jdbcType="VARCHAR" property="subject" />
+        <result column="signup_date" jdbcType="TIMESTAMP" property="signupDate" />
+        <result column="contact_time" jdbcType="VARCHAR" property="contactTime" />
+        <result column="connect_status" jdbcType="VARCHAR" property="connectStatus" />
+        <result column="channel_uuid" jdbcType="VARCHAR" property="channelUuid" />
+        <result column="jh" jdbcType="VARCHAR" property="jh" />
+        <result column="dy" jdbcType="VARCHAR" property="dy" />
+        <result column="key_num" jdbcType="VARCHAR" property="keyNum" />
+        <result column="status" jdbcType="BIT" property="status" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="grade_rank" jdbcType="VARCHAR" property="gradeRank" />
+        <result column="city" jdbcType="VARCHAR" property="city" />
+        <result column="province" jdbcType="VARCHAR" property="province" />
+        <result column="count" jdbcType="VARCHAR" property="count" />
+        <result column="school" jdbcType="VARCHAR" property="school" />
+        <result column="is_have_mic" jdbcType="INTEGER" property="isHaveMic" />
+        <result column="is_have_headset" jdbcType="INTEGER" property="isHaveHeadset" />
+        <result column="is_have_computer" jdbcType="INTEGER" property="isHaveComputer" />
+        <result column="is_have_pad" jdbcType="INTEGER" property="isHavePad" />
+        <result column="city_id" jdbcType="INTEGER" property="cityId" />
+        <result column="province_id" jdbcType="INTEGER" property="provinceId" />
+        <result column="count_id" jdbcType="INTEGER" property="countId" />
+        <result column="phone_localtion" jdbcType="VARCHAR" property="phoneLocaltion" />
+    </resultMap>
+    <sql id="LeadsLog_Column_List">
+        id, name, phone, grade, subject, signup_date, contact_time, connect_status, channel_uuid,
+        jh, dy, key_num, status, create_date, update_date, grade_rank, city, province, count,
+        school, is_have_mic, is_have_headset, is_have_computer, is_have_pad, city_id, province_id,
+        count_id, phone_localtion
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="LeadsLogResultMap">
+        select
+        <include refid="LeadsLog_Column_List" />
+        from leads_log
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from leads_log
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.LeadsLog">
+        insert into leads_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="subject != null">
+                subject,
+            </if>
+            <if test="signupDate != null">
+                signup_date,
+            </if>
+            <if test="contactTime != null">
+                contact_time,
+            </if>
+            <if test="connectStatus != null">
+                connect_status,
+            </if>
+            <if test="channelUuid != null">
+                channel_uuid,
+            </if>
+            <if test="jh != null">
+                jh,
+            </if>
+            <if test="dy != null">
+                dy,
+            </if>
+            <if test="keyNum != null">
+                key_num,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="gradeRank != null">
+                grade_rank,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="count != null">
+                count,
+            </if>
+            <if test="school != null">
+                school,
+            </if>
+            <if test="isHaveMic != null">
+                is_have_mic,
+            </if>
+            <if test="isHaveHeadset != null">
+                is_have_headset,
+            </if>
+            <if test="isHaveComputer != null">
+                is_have_computer,
+            </if>
+            <if test="isHavePad != null">
+                is_have_pad,
+            </if>
+            <if test="cityId != null">
+                city_id,
+            </if>
+            <if test="provinceId != null">
+                province_id,
+            </if>
+            <if test="countId != null">
+                count_id,
+            </if>
+            <if test="phoneLocaltion != null">
+                phone_localtion,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="subject != null">
+                #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="signupDate != null">
+                #{signupDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="contactTime != null">
+                #{contactTime,jdbcType=VARCHAR},
+            </if>
+            <if test="connectStatus != null">
+                #{connectStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="channelUuid != null">
+                #{channelUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="jh != null">
+                #{jh,jdbcType=VARCHAR},
+            </if>
+            <if test="dy != null">
+                #{dy,jdbcType=VARCHAR},
+            </if>
+            <if test="keyNum != null">
+                #{keyNum,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gradeRank != null">
+                #{gradeRank,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="count != null">
+                #{count,jdbcType=VARCHAR},
+            </if>
+            <if test="school != null">
+                #{school,jdbcType=VARCHAR},
+            </if>
+            <if test="isHaveMic != null">
+                #{isHaveMic,jdbcType=INTEGER},
+            </if>
+            <if test="isHaveHeadset != null">
+                #{isHaveHeadset,jdbcType=INTEGER},
+            </if>
+            <if test="isHaveComputer != null">
+                #{isHaveComputer,jdbcType=INTEGER},
+            </if>
+            <if test="isHavePad != null">
+                #{isHavePad,jdbcType=INTEGER},
+            </if>
+            <if test="cityId != null">
+                #{cityId,jdbcType=INTEGER},
+            </if>
+            <if test="provinceId != null">
+                #{provinceId,jdbcType=INTEGER},
+            </if>
+            <if test="countId != null">
+                #{countId,jdbcType=INTEGER},
+            </if>
+            <if test="phoneLocaltion != null">
+                #{phoneLocaltion,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.LeadsLog">
+        update leads_log
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="subject != null">
+                subject = #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="signupDate != null">
+                signup_date = #{signupDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="contactTime != null">
+                contact_time = #{contactTime,jdbcType=VARCHAR},
+            </if>
+            <if test="connectStatus != null">
+                connect_status = #{connectStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="channelUuid != null">
+                channel_uuid = #{channelUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="jh != null">
+                jh = #{jh,jdbcType=VARCHAR},
+            </if>
+            <if test="dy != null">
+                dy = #{dy,jdbcType=VARCHAR},
+            </if>
+            <if test="keyNum != null">
+                key_num = #{keyNum,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gradeRank != null">
+                grade_rank = #{gradeRank,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="count != null">
+                count = #{count,jdbcType=VARCHAR},
+            </if>
+            <if test="school != null">
+                school = #{school,jdbcType=VARCHAR},
+            </if>
+            <if test="isHaveMic != null">
+                is_have_mic = #{isHaveMic,jdbcType=INTEGER},
+            </if>
+            <if test="isHaveHeadset != null">
+                is_have_headset = #{isHaveHeadset,jdbcType=INTEGER},
+            </if>
+            <if test="isHaveComputer != null">
+                is_have_computer = #{isHaveComputer,jdbcType=INTEGER},
+            </if>
+            <if test="isHavePad != null">
+                is_have_pad = #{isHavePad,jdbcType=INTEGER},
+            </if>
+            <if test="cityId != null">
+                city_id = #{cityId,jdbcType=INTEGER},
+            </if>
+            <if test="provinceId != null">
+                province_id = #{provinceId,jdbcType=INTEGER},
+            </if>
+            <if test="countId != null">
+                count_id = #{countId,jdbcType=INTEGER},
+            </if>
+            <if test="phoneLocaltion != null">
+                phone_localtion = #{phoneLocaltion,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

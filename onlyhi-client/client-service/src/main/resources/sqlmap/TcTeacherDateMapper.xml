@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.TcTeacherDateMapper">
+    <resultMap id="TcTeacherDateResultMap" type="cn.onlyhi.client.po.TcTeacherDate">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="teacher_uuid" jdbcType="VARCHAR" property="teacherUuid" />
+        <result column="tc_date" jdbcType="VARCHAR" property="tcDate" />
+        <result column="tc_time" jdbcType="VARCHAR" property="tcTime" />
+        <result column="not_idle" jdbcType="INTEGER" property="notIdle" />
+        <result column="enabled" jdbcType="INTEGER" property="enabled" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
+        <result column="version" jdbcType="BIGINT" property="version" />
+        <result column="freetime_month" jdbcType="VARCHAR" property="freetimeMonth" />
+        <result column="week_of_month" jdbcType="INTEGER" property="weekOfMonth" />
+        <result column="end_time" jdbcType="VARCHAR" property="endTime" />
+    </resultMap>
+    <sql id="TcTeacherDate_Column_List">
+        id, teacher_uuid, tc_date, tc_time, not_idle, enabled, create_date, create_user_id, 
+        update_date, update_user_id, version, freetime_month, week_of_month, end_time
+    </sql>
+    <select id="findFreetimePeriodByTeacherUuidAndFreetimeDate" resultType="java.lang.String">
+        select tc_time
+        from tc_teacher_date where teacher_uuid=#{teacherUuid} and tc_date=#{freetimeDate}
+    </select>
+    <insert id="batchSave" parameterType="java.util.List">
+        insert into tc_teacher_date
+        (teacher_uuid
+        , tc_date
+        , tc_time
+        , create_user_id
+        , freetime_month
+        , week_of_month
+        , end_time)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.teacherUuid,jdbcType=VARCHAR},
+            #{item.tcDate,jdbcType=VARCHAR},
+            #{item.tcTime,jdbcType=VARCHAR},
+            #{item.createUserId,jdbcType=VARCHAR},
+            #{item.freetimeMonth,jdbcType=VARCHAR},
+            #{item.weekOfMonth,jdbcType=INTEGER},
+            #{item.endTime,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <delete id="deleteByTeacherUuidAndTcDate">
+        delete from tc_teacher_date where teacher_uuid=#{teacherUuid} and LEFT(tc_date,7)=#{freetimeMonth}
+    </delete>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="TcTeacherDateResultMap">
+        select 
+        <include refid="TcTeacherDate_Column_List" />
+        from tc_teacher_date
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from tc_teacher_date
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.TcTeacherDate">
+        insert into tc_teacher_date
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="teacherUuid != null">
+                teacher_uuid,
+            </if>
+            <if test="tcDate != null">
+                tc_date,
+            </if>
+            <if test="tcTime != null">
+                tc_time,
+            </if>
+            <if test="notIdle != null">
+                not_idle,
+            </if>
+            <if test="enabled != null">
+                enabled,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="createUserId != null">
+                create_user_id,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="updateUserId != null">
+                update_user_id,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="freetimeMonth != null">
+                freetime_month,
+            </if>
+            <if test="weekOfMonth != null">
+                week_of_month,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="teacherUuid != null">
+                #{teacherUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="tcDate != null">
+                #{tcDate,jdbcType=VARCHAR},
+            </if>
+            <if test="tcTime != null">
+                #{tcTime,jdbcType=VARCHAR},
+            </if>
+            <if test="notIdle != null">
+                #{notIdle,jdbcType=INTEGER},
+            </if>
+            <if test="enabled != null">
+                #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId != null">
+                #{createUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                #{updateUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=BIGINT},
+            </if>
+            <if test="freetimeMonth != null">
+                #{freetimeMonth,jdbcType=VARCHAR},
+            </if>
+            <if test="weekOfMonth != null">
+                #{weekOfMonth,jdbcType=INTEGER},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.TcTeacherDate">
+        update tc_teacher_date
+        <set>
+            <if test="teacherUuid != null">
+                teacher_uuid = #{teacherUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="tcDate != null">
+                tc_date = #{tcDate,jdbcType=VARCHAR},
+            </if>
+            <if test="tcTime != null">
+                tc_time = #{tcTime,jdbcType=VARCHAR},
+            </if>
+            <if test="notIdle != null">
+                not_idle = #{notIdle,jdbcType=INTEGER},
+            </if>
+            <if test="enabled != null">
+                enabled = #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId != null">
+                create_user_id = #{createUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=BIGINT},
+            </if>
+            <if test="freetimeMonth != null">
+                freetime_month = #{freetimeMonth,jdbcType=VARCHAR},
+            </if>
+            <if test="weekOfMonth != null">
+                week_of_month = #{weekOfMonth,jdbcType=INTEGER},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

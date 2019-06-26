@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.PromotionCodeMapper">
+    <resultMap id="PromotionCodeResultMap" type="cn.onlyhi.client.po.PromotionCode">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="course_price_uuid" jdbcType="VARCHAR" property="coursePriceUuid" />
+        <result column="promotion_code" jdbcType="VARCHAR" property="promotionCode" />
+        <result column="promotion_name" jdbcType="VARCHAR" property="promotionName" />
+        <result column="promotion_type" jdbcType="TINYINT" property="promotionType" />
+        <result column="full_money" jdbcType="DOUBLE" property="fullMoney" />
+        <result column="red_password" jdbcType="VARCHAR" property="redPassword" />
+        <result column="promotion_money" jdbcType="DOUBLE" property="promotionMoney" />
+        <result column="creater" jdbcType="VARCHAR" property="creater" />
+        <result column="updater" jdbcType="VARCHAR" property="updater" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="status" jdbcType="BIT" property="status" />
+        <result column="give_length" jdbcType="INTEGER" property="giveLength" />
+    </resultMap>
+    <sql id="PromotionCode_Column_List">
+        id, uuid, course_price_uuid, promotion_code, promotion_name, promotion_type, full_money,
+        red_password, promotion_money, creater, updater, create_date, update_date, status,
+        give_length
+    </sql>
+    <select id="findPromotionCodeByCoursePriceUuidAndCode" resultMap="PromotionCodeResultMap">
+        select
+        <include refid="PromotionCode_Column_List"/>
+        from promotion_code
+        where status=1 and course_price_uuid=#{coursePriceUuid} and promotion_code=#{code}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="PromotionCodeResultMap">
+        select 
+        <include refid="PromotionCode_Column_List" />
+        from promotion_code
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from promotion_code
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.PromotionCode">
+        insert into promotion_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="coursePriceUuid != null">
+                course_price_uuid,
+            </if>
+            <if test="promotionCode != null">
+                promotion_code,
+            </if>
+            <if test="promotionName != null">
+                promotion_name,
+            </if>
+            <if test="promotionType != null">
+                promotion_type,
+            </if>
+            <if test="fullMoney != null">
+                full_money,
+            </if>
+            <if test="redPassword != null">
+                red_password,
+            </if>
+            <if test="promotionMoney != null">
+                promotion_money,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="giveLength != null">
+                give_length,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursePriceUuid != null">
+                #{coursePriceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionCode != null">
+                #{promotionCode,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionName != null">
+                #{promotionName,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionType != null">
+                #{promotionType,jdbcType=TINYINT},
+            </if>
+            <if test="fullMoney != null">
+                #{fullMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="redPassword != null">
+                #{redPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionMoney != null">
+                #{promotionMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="giveLength != null">
+                #{giveLength,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.PromotionCode">
+        update promotion_code
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursePriceUuid != null">
+                course_price_uuid = #{coursePriceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionCode != null">
+                promotion_code = #{promotionCode,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionName != null">
+                promotion_name = #{promotionName,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionType != null">
+                promotion_type = #{promotionType,jdbcType=TINYINT},
+            </if>
+            <if test="fullMoney != null">
+                full_money = #{fullMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="redPassword != null">
+                red_password = #{redPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionMoney != null">
+                promotion_money = #{promotionMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="giveLength != null">
+                give_length = #{giveLength,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="PromotionCodeResultMap">
+        select
+        <include refid="PromotionCode_Column_List" />
+        from promotion_code
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.PromotionCode">
+        update promotion_code
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="coursePriceUuid != null">
+                course_price_uuid = #{coursePriceUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionCode != null">
+                promotion_code = #{promotionCode,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionName != null">
+                promotion_name = #{promotionName,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionType != null">
+                promotion_type = #{promotionType,jdbcType=TINYINT},
+            </if>
+            <if test="fullMoney != null">
+                full_money = #{fullMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="redPassword != null">
+                red_password = #{redPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionMoney != null">
+                promotion_money = #{promotionMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="giveLength != null">
+                give_length = #{giveLength,jdbcType=INTEGER},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

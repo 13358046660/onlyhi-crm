@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.TcTeacherFileMapper">
+    <resultMap id="TcTeacherFileResultMap" type="cn.onlyhi.client.po.TcTeacherFile">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="teacher_id" jdbcType="BIGINT" property="teacherId" />
+        <result column="oss_key" jdbcType="VARCHAR" property="ossKey" />
+        <result column="purpose" jdbcType="INTEGER" property="purpose" />
+        <result column="file_address" jdbcType="VARCHAR" property="fileAddress" />
+        <result column="file_original_name" jdbcType="VARCHAR" property="fileOriginalName" />
+        <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+        <result column="enabled" jdbcType="INTEGER" property="enabled" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
+        <result column="version" jdbcType="BIGINT" property="version" />
+    </resultMap>
+    <sql id="TcTeacherFile_Column_List">
+        id, teacher_id, oss_key, purpose, file_address, file_original_name, file_name, enabled, 
+        create_date, create_user_id, update_date, update_user_id, version
+    </sql>
+    <select id="findByTeacherIdAndPurpose" resultMap="TcTeacherFileResultMap">
+        select
+        <include refid="TcTeacherFile_Column_List" />
+        from tc_teacher_file
+        where teacher_id = #{teacherId} and purpose=#{purpose}
+    </select>
+    <insert id="batchSave" parameterType="java.util.List">
+        insert into tc_teacher_file
+        (teacher_id, oss_key, purpose, file_address, file_original_name, file_name,create_user_id)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.teacherId,jdbcType=BIGINT},
+            #{item.ossKey,jdbcType=VARCHAR},
+            #{item.purpose,jdbcType=INTEGER},
+            #{item.fileAddress,jdbcType=VARCHAR},
+            #{item.fileOriginalName,jdbcType=VARCHAR},
+            #{item.fileName,jdbcType=VARCHAR},
+            #{item.createUserId,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <delete id="deleteByTeacherId" parameterType="java.lang.Long">
+        delete from tc_teacher_file where teacher_id = #{teacherId}
+    </delete>
+    <select id="findByTeacherId" parameterType="java.lang.Long" resultMap="TcTeacherFileResultMap">
+        select
+        <include refid="TcTeacherFile_Column_List" />
+        from tc_teacher_file
+        where teacher_id = #{teacherId}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="TcTeacherFileResultMap">
+        select 
+        <include refid="TcTeacherFile_Column_List" />
+        from tc_teacher_file
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from tc_teacher_file
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.TcTeacherFile">
+        insert into tc_teacher_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="teacherId != null">
+                teacher_id,
+            </if>
+            <if test="ossKey != null">
+                oss_key,
+            </if>
+            <if test="purpose != null">
+                purpose,
+            </if>
+            <if test="fileAddress != null">
+                file_address,
+            </if>
+            <if test="fileOriginalName != null">
+                file_original_name,
+            </if>
+            <if test="fileName != null">
+                file_name,
+            </if>
+            <if test="enabled != null">
+                enabled,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="createUserId != null">
+                create_user_id,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="updateUserId != null">
+                update_user_id,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="teacherId != null">
+                #{teacherId,jdbcType=BIGINT},
+            </if>
+            <if test="ossKey != null">
+                #{ossKey,jdbcType=VARCHAR},
+            </if>
+            <if test="purpose != null">
+                #{purpose,jdbcType=INTEGER},
+            </if>
+            <if test="fileAddress != null">
+                #{fileAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="fileOriginalName != null">
+                #{fileOriginalName,jdbcType=VARCHAR},
+            </if>
+            <if test="fileName != null">
+                #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="enabled != null">
+                #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId != null">
+                #{createUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                #{updateUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.TcTeacherFile">
+        update tc_teacher_file
+        <set>
+            <if test="teacherId != null">
+                teacher_id = #{teacherId,jdbcType=BIGINT},
+            </if>
+            <if test="ossKey != null">
+                oss_key = #{ossKey,jdbcType=VARCHAR},
+            </if>
+            <if test="purpose != null">
+                purpose = #{purpose,jdbcType=INTEGER},
+            </if>
+            <if test="fileAddress != null">
+                file_address = #{fileAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="fileOriginalName != null">
+                file_original_name = #{fileOriginalName,jdbcType=VARCHAR},
+            </if>
+            <if test="fileName != null">
+                file_name = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="enabled != null">
+                enabled = #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId != null">
+                create_user_id = #{createUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.ClassRoomMapper">
+    <resultMap id="ClassRoomResultMap" type="cn.onlyhi.client.po.ClassRoom">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="class_room_uuid" jdbcType="VARCHAR" property="classRoomUuid"/>
+        <result column="course_uuid" jdbcType="VARCHAR" property="courseUuid"/>
+        <result column="comm_channel_id" jdbcType="VARCHAR" property="commChannelId"/>
+        <result column="signalling_channel_id" jdbcType="VARCHAR" property="signallingChannelId"/>
+        <result column="record_id" jdbcType="INTEGER" property="recordId"/>
+        <result column="voice_url" jdbcType="VARCHAR" property="voiceUrl"/>
+        <result column="flac_voice_url" jdbcType="VARCHAR" property="flacVoiceUrl"/>
+        <result column="voice_duration" jdbcType="INTEGER" property="voiceDuration"/>
+        <result column="track_url" jdbcType="VARCHAR" property="trackUrl"/>
+        <result column="enter_room_time" jdbcType="BIGINT" property="enterRoomTime"/>
+        <result column="out_room_time" jdbcType="BIGINT" property="outRoomTime"/>
+        <result column="overtime" jdbcType="INTEGER" property="overtime"/>
+        <result column="student_class_time" jdbcType="DECIMAL" property="studentClassTime"/>
+        <result column="teacher_class_time" jdbcType="DECIMAL" property="teacherClassTime"/>
+        <result column="statistics_status" jdbcType="INTEGER" property="statisticsStatus"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_uid" jdbcType="VARCHAR" property="createUid"/>
+        <result column="update_uid" jdbcType="VARCHAR" property="updateUid"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+        <result column="mp4_video_url" jdbcType="VARCHAR" property="mp4VideoUrl"/>
+        <result column="video_duration" jdbcType="INTEGER" property="videoDuration"/>
+        <result column="m4a_oss_key" jdbcType="VARCHAR" property="m4aOssKey"/>
+        <result column="flac_oss_key" jdbcType="VARCHAR" property="flacOssKey"/>
+        <result column="track_oss_key" jdbcType="VARCHAR" property="trackOssKey"/>
+        <result column="mp4_oss_key" jdbcType="VARCHAR" property="mp4OssKey"/>
+    </resultMap>
+    <resultMap id="ClassRoomResultExtendMap" type="cn.onlyhi.client.dto.ClassRoomVO">
+        <result column="voice_url" jdbcType="VARCHAR" property="voiceUrl"/>
+        <result column="track_url" jdbcType="VARCHAR" property="trackUrl"/>
+        <result column="course_date" jdbcType="VARCHAR" property="courseDate" />
+    </resultMap>
+    <sql id="ClassRoom_Column_List">
+        id, class_room_uuid, course_uuid, comm_channel_id, signalling_channel_id, record_id,
+        voice_url, flac_voice_url, voice_duration, track_url, enter_room_time, out_room_time,
+        overtime, student_class_time, teacher_class_time, statistics_status, status, create_time,
+        update_time, create_uid, update_uid, remark, sort ,mp4_video_url,video_duration,m4a_oss_key, flac_oss_key, track_oss_key,
+        mp4_oss_key
+    </sql>
+    <update id="updateOvertimeByCourseUuid">
+        update class_room set overtime=overtime + #{overtime} where course_uuid=#{courseUuid}
+    </update>
+    <select id="findCourseException" resultMap="ClassRoomResultMap">
+        select
+        <include refid="ClassRoom_Column_List"/>
+        from class_room
+        where status=1 and statistics_status = 0
+    </select>
+    <update id="updateByCourseUuid" parameterType="cn.onlyhi.client.po.ClassRoom">
+        update class_room
+        <set>
+            <if test="commChannelId != null">
+                comm_channel_id = #{commChannelId,jdbcType=VARCHAR},
+            </if>
+            <if test="signallingChannelId != null">
+                signalling_channel_id = #{signallingChannelId,jdbcType=VARCHAR},
+            </if>
+            <if test="recordId != null">
+                record_id = #{recordId,jdbcType=INTEGER},
+            </if>
+            <if test="voiceUrl != null">
+                voice_url = #{voiceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="flacVoiceUrl != null">
+                flac_voice_url = #{flacVoiceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="voiceDuration != null">
+                voice_duration = #{voiceDuration,jdbcType=INTEGER},
+            </if>
+            <if test="trackUrl != null">
+                track_url = #{trackUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="enterRoomTime != null">
+                enter_room_time = #{enterRoomTime,jdbcType=BIGINT},
+            </if>
+            <if test="outRoomTime != null">
+                out_room_time = #{outRoomTime,jdbcType=BIGINT},
+            </if>
+            <if test="overtime != null">
+                overtime = #{overtime,jdbcType=INTEGER},
+            </if>
+            <if test="studentClassTime != null">
+                student_class_time = #{studentClassTime,jdbcType=DECIMAL},
+            </if>
+            <if test="teacherClassTime != null">
+                teacher_class_time = #{teacherClassTime,jdbcType=DECIMAL},
+            </if>
+            <if test="statisticsStatus != null">
+                statistics_status = #{statisticsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="mp4VideoUrl != null">
+                mp4_video_url = #{mp4VideoUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="videoDuration != null">
+                video_duration = #{videoDuration,jdbcType=INTEGER},
+            </if>
+            <if test="m4aOssKey != null">
+                m4a_oss_key = #{m4aOssKey,jdbcType=VARCHAR},
+            </if>
+            <if test="flacOssKey != null">
+                flac_oss_key = #{flacOssKey,jdbcType=VARCHAR},
+            </if>
+            <if test="trackOssKey != null">
+                track_oss_key = #{trackOssKey,jdbcType=VARCHAR},
+            </if>
+            <if test="mp4OssKey != null">
+                mp4_oss_key = #{mp4OssKey,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where course_uuid = #{courseUuid,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByDate" parameterType="cn.onlyhi.client.dto.ClassRoomVO">
+        update class_room
+        <set>
+            <if test="voiceUrl != null">
+                voice_url = #{voiceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="trackUrl != null">
+                track_url = #{trackUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="statisticsStatus != null">
+                statistics_status = #{statisticsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="mp4VideoUrl != null">
+                mp4_video_url = #{mp4VideoUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="videoDuration != null">
+                video_duration = #{videoDuration,jdbcType=INTEGER},
+            </if>
+            <if test="m4aOssKey != null">
+                m4a_oss_key = #{m4aOssKey,jdbcType=VARCHAR},
+            </if>
+            <if test="trackOssKey != null">
+                track_oss_key = #{trackOssKey,jdbcType=VARCHAR},
+            </if>
+            <if test="mp4OssKey != null">
+                mp4_oss_key = #{mp4OssKey,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <!--BETWEEN AND的范围是大于等于“取值1”，同时小于等于“取值2”-->
+        where create_time BETWEEN #{startDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR} and course_uuid =
+        #{courseUuid,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ClassRoomResultMap">
+        select
+        <include refid="ClassRoom_Column_List"/>
+        from class_room
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from class_room
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.ClassRoom">
+        insert into class_room
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="classRoomUuid != null">
+                class_room_uuid,
+            </if>
+            <if test="courseUuid != null">
+                course_uuid,
+            </if>
+            <if test="commChannelId != null">
+                comm_channel_id,
+            </if>
+            <if test="signallingChannelId != null">
+                signalling_channel_id,
+            </if>
+            <if test="recordId != null">
+                record_id,
+            </if>
+            <if test="voiceUrl != null">
+                voice_url,
+            </if>
+            <if test="flacVoiceUrl != null">
+                flac_voice_url,
+            </if>
+            <if test="voiceDuration != null">
+                voice_duration,
+            </if>
+            <if test="trackUrl != null">
+                track_url,
+            </if>
+            <if test="enterRoomTime != null">
+                enter_room_time,
+            </if>
+            <if test="outRoomTime != null">
+                out_room_time,
+            </if>
+            <if test="overtime != null">
+                overtime,
+            </if>
+            <if test="studentClassTime != null">
+                student_class_time,
+            </if>
+            <if test="teacherClassTime != null">
+                teacher_class_time,
+            </if>
+            <if test="statisticsStatus != null">
+                statistics_status,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createUid != null">
+                create_uid,
+            </if>
+            <if test="updateUid != null">
+                update_uid,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="classRoomUuid != null">
+                #{classRoomUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseUuid != null">
+                #{courseUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="commChannelId != null">
+                #{commChannelId,jdbcType=VARCHAR},
+            </if>
+            <if test="signallingChannelId != null">
+                #{signallingChannelId,jdbcType=VARCHAR},
+            </if>
+            <if test="recordId != null">
+                #{recordId,jdbcType=INTEGER},
+            </if>
+            <if test="voiceUrl != null">
+                #{voiceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="flacVoiceUrl != null">
+                #{flacVoiceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="voiceDuration != null">
+                #{voiceDuration,jdbcType=INTEGER},
+            </if>
+            <if test="trackUrl != null">
+                #{trackUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="enterRoomTime != null">
+                #{enterRoomTime,jdbcType=BIGINT},
+            </if>
+            <if test="outRoomTime != null">
+                #{outRoomTime,jdbcType=BIGINT},
+            </if>
+            <if test="overtime != null">
+                #{overtime,jdbcType=INTEGER},
+            </if>
+            <if test="studentClassTime != null">
+                #{studentClassTime,jdbcType=DECIMAL},
+            </if>
+            <if test="teacherClassTime != null">
+                #{teacherClassTime,jdbcType=DECIMAL},
+            </if>
+            <if test="statisticsStatus != null">
+                #{statisticsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                #{updateUid,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.ClassRoom">
+        update class_room
+        <set>
+            <if test="classRoomUuid != null">
+                class_room_uuid = #{classRoomUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseUuid != null">
+                course_uuid = #{courseUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="commChannelId != null">
+                comm_channel_id = #{commChannelId,jdbcType=VARCHAR},
+            </if>
+            <if test="signallingChannelId != null">
+                signalling_channel_id = #{signallingChannelId,jdbcType=VARCHAR},
+            </if>
+            <if test="recordId != null">
+                record_id = #{recordId,jdbcType=INTEGER},
+            </if>
+            <if test="voiceUrl != null">
+                voice_url = #{voiceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="flacVoiceUrl != null">
+                flac_voice_url = #{flacVoiceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="voiceDuration != null">
+                voice_duration = #{voiceDuration,jdbcType=INTEGER},
+            </if>
+            <if test="trackUrl != null">
+                track_url = #{trackUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="enterRoomTime != null">
+                enter_room_time = #{enterRoomTime,jdbcType=BIGINT},
+            </if>
+            <if test="outRoomTime != null">
+                out_room_time = #{outRoomTime,jdbcType=BIGINT},
+            </if>
+            <if test="overtime != null">
+                overtime = #{overtime,jdbcType=INTEGER},
+            </if>
+            <if test="studentClassTime != null">
+                student_class_time = #{studentClassTime,jdbcType=DECIMAL},
+            </if>
+            <if test="teacherClassTime != null">
+                teacher_class_time = #{teacherClassTime,jdbcType=DECIMAL},
+            </if>
+            <if test="statisticsStatus != null">
+                statistics_status = #{statisticsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="ClassRoomResultMap">
+        select
+        <include refid="ClassRoom_Column_List"/>
+        from class_room
+        where class_room_uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.ClassRoom">
+        update class_room
+        <set>
+            <if test="commChannelId != null">
+                comm_channel_id = #{commChannelId,jdbcType=VARCHAR},
+            </if>
+            <if test="signallingChannelId != null">
+                signalling_channel_id = #{signallingChannelId,jdbcType=VARCHAR},
+            </if>
+            <if test="recordId != null">
+                record_id = #{recordId,jdbcType=INTEGER},
+            </if>
+            <if test="voiceUrl != null">
+                voice_url = #{voiceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="flacVoiceUrl != null">
+                flac_voice_url = #{flacVoiceUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="voiceDuration != null">
+                voice_duration = #{voiceDuration,jdbcType=INTEGER},
+            </if>
+            <if test="trackUrl != null">
+                track_url = #{trackUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="enterRoomTime != null">
+                enter_room_time = #{enterRoomTime,jdbcType=BIGINT},
+            </if>
+            <if test="outRoomTime != null">
+                out_room_time = #{outRoomTime,jdbcType=BIGINT},
+            </if>
+            <if test="overtime != null">
+                overtime = #{overtime,jdbcType=INTEGER},
+            </if>
+            <if test="studentClassTime != null">
+                student_class_time = #{studentClassTime,jdbcType=DECIMAL},
+            </if>
+            <if test="teacherClassTime != null">
+                teacher_class_time = #{teacherClassTime,jdbcType=DECIMAL},
+            </if>
+            <if test="statisticsStatus != null">
+                statistics_status = #{statisticsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </set>
+        where class_room_uuid = #{classRoomUuid,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByCourseUuid" resultMap="ClassRoomResultMap" parameterType="java.lang.String">
+        select
+        <include refid="ClassRoom_Column_List"/>
+        from class_room
+        where course_uuid = #{courseUuid,jdbcType=VARCHAR} and status=1
+    </select>
+    <select id="selectNormalRoom" resultMap="ClassRoomResultMap" parameterType="java.lang.String">
+        select
+        <include refid="ClassRoom_Column_List"/>
+        from class_room
+        where statistics_status=2 and track_url!=NULL and voice_duration!=null and status=1 and course_uuid =
+        #{courseUuid,jdbcType=VARCHAR}
+    </select>
+    <select id="selectNormalRoomGold" resultMap="ClassRoomResultMap" parameterType="java.lang.String">
+        select
+        <include refid="ClassRoom_Column_List"/>
+        from class_room
+        where statistics_status=2 and track_url!=NULL and voice_duration!=null and voice_url!=null and
+        flac_voice_url!=null and status=1 and course_uuid = #{courseUuid,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByDate" resultMap="ClassRoomResultExtendMap" parameterType="cn.onlyhi.client.dto.ClassRoomVO">
+        select c.course_uuid,c.track_url,c.voice_url,cs.course_date
+        from class_room c INNER JOIN cp_course cs on c.course_uuid=cs.uuid
+        where c.create_time BETWEEN #{startDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.CourseLeadsMapper">
+    <resultMap id="CourseLeadsResultMap" type="cn.onlyhi.client.po.CourseLeads">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="course_leads_uuid" jdbcType="VARCHAR" property="courseLeadsUuid"/>
+        <result column="course_uuid" jdbcType="VARCHAR" property="courseUuid"/>
+        <result column="leads_uuid" jdbcType="VARCHAR" property="leadsUuid"/>
+        <result column="course_order_uuid" jdbcType="VARCHAR" property="courseOrderUuid"/>
+        <result column="course_request_uuid" jdbcType="VARCHAR" property="courseRequestUuid"/>
+        <result column="pay_uuid" jdbcType="VARCHAR" property="payUuid"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_uid" jdbcType="VARCHAR" property="createUid"/>
+        <result column="update_uid" jdbcType="VARCHAR" property="updateUid"/>
+    </resultMap>
+    <sql id="CourseLeads_Column_List">
+        id, course_leads_uuid, course_uuid, leads_uuid, course_order_uuid, course_request_uuid, 
+        pay_uuid, status, sort, remark, create_time, update_time, create_uid, update_uid
+    </sql>
+    <select id="findNoEndCourseByLeadsUuid" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+            co.`subject`,
+            t.tc_name AS teacher_name,
+            cl.course_uuid,
+            c.start_time,
+            c.teacher_uuid,
+            cl.leads_uuid,
+            c.end_time,
+            c.course_date,
+            c.real_start_time,
+            c.real_end_time,
+            co.grade
+        from course_leads cl
+        inner join cp_course c on c.uuid=cl.course_uuid and c.status=1 and c.class_type=2 and c.class_status!=1 and concat(c.course_date,' ',c.end_time) > date_format(now(),'%Y-%m-%d %H:%i')
+        left join cp_course_order co ON co.uuid = cl.course_order_uuid
+        LEFT JOIN tc_teacher t ON t.uuid = c.teacher_uuid
+        where cl.status=1 and cl.leads_uuid=#{leadsUuid}
+        limit #{startSize},#{pageSize}
+    </select>
+    <select id="countNoEndCourseByLeadsUuid" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select
+            count(*)
+        from course_leads cl
+        inner join cp_course c on c.uuid=cl.course_uuid and c.status=1 and c.class_type=2 and c.class_status!=1 and concat(c.course_date,' ',c.end_time) > date_format(now(),'%Y-%m-%d %H:%i')
+        where cl.status=1 and cl.leads_uuid=#{leadsUuid}
+    </select>
+    <select id="findByCourseUuid" parameterType="java.lang.String" resultType="cn.onlyhi.client.dto.CourseLeadsDto">
+        select
+          cl.leads_uuid
+          ,l.name as leads_name
+          ,co.subject
+          ,co.grade
+        from course_leads cl
+        LEFT JOIN leads l on l.uuid=cl.leads_uuid
+        left join cp_course_order co on co.uuid=cl.course_order_uuid
+        where cl.status=1 and cl.course_uuid = #{courseUuid}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="CourseLeadsResultMap">
+        select
+        <include refid="CourseLeads_Column_List"/>
+        from course_leads
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from course_leads
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.CourseLeads">
+        insert into course_leads
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="courseLeadsUuid != null">
+                course_leads_uuid,
+            </if>
+            <if test="courseUuid != null">
+                course_uuid,
+            </if>
+            <if test="leadsUuid != null">
+                leads_uuid,
+            </if>
+            <if test="courseOrderUuid != null">
+                course_order_uuid,
+            </if>
+            <if test="courseRequestUuid != null">
+                course_request_uuid,
+            </if>
+            <if test="payUuid != null">
+                pay_uuid,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createUid != null">
+                create_uid,
+            </if>
+            <if test="updateUid != null">
+                update_uid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="courseLeadsUuid != null">
+                #{courseLeadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseUuid != null">
+                #{courseUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsUuid != null">
+                #{leadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseOrderUuid != null">
+                #{courseOrderUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseRequestUuid != null">
+                #{courseRequestUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="payUuid != null">
+                #{payUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.CourseLeads">
+        update course_leads
+        <set>
+            <if test="courseLeadsUuid != null">
+                course_leads_uuid = #{courseLeadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseUuid != null">
+                course_uuid = #{courseUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsUuid != null">
+                leads_uuid = #{leadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseOrderUuid != null">
+                course_order_uuid = #{courseOrderUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseRequestUuid != null">
+                course_request_uuid = #{courseRequestUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="payUuid != null">
+                pay_uuid = #{payUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="CourseLeadsResultMap">
+        select
+        <include refid="CourseLeads_Column_List"/>
+        from course_leads
+        where course_leads_uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.CourseLeads">
+        update course_leads
+        <set>
+            <if test="courseLeadsUuid != null">
+                course_leads_uuid = #{courseLeadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseUuid != null">
+                course_uuid = #{courseUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsUuid != null">
+                leads_uuid = #{leadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseOrderUuid != null">
+                course_order_uuid = #{courseOrderUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseRequestUuid != null">
+                course_request_uuid = #{courseRequestUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="payUuid != null">
+                pay_uuid = #{payUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where course_leads_uuid = #{courseLeadsUuid,jdbcType=VARCHAR}
+    </update>
+</mapper>

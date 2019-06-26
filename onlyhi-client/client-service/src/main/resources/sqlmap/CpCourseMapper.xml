@@ -1,0 +1,1816 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.CpCourseMapper">
+    <resultMap id="CpCourseResultMap" type="cn.onlyhi.client.po.CpCourse">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uuid" jdbcType="VARCHAR" property="uuid"/>
+        <result column="course_order_uuid" jdbcType="VARCHAR" property="courseOrderUuid"/>
+        <result column="course_request_uuid" jdbcType="VARCHAR" property="courseRequestUuid"/>
+        <result column="pay_uuid" jdbcType="VARCHAR" property="payUuid"/>
+        <result column="user_uuid" jdbcType="VARCHAR" property="userUuid"/>
+        <result column="leads_uuid" jdbcType="VARCHAR" property="leadsUuid"/>
+        <result column="course_type" jdbcType="INTEGER" property="courseType"/>
+        <result column="length" jdbcType="VARCHAR" property="length"/>
+        <result column="course_date" jdbcType="VARCHAR" property="courseDate"/>
+        <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
+        <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
+        <result column="is_success" jdbcType="INTEGER" property="isSuccess"/>
+        <result column="status" jdbcType="BIT" property="status"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="teacher_uuid" jdbcType="VARCHAR" property="teacherUuid"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="real_start_time" jdbcType="VARCHAR" property="realStartTime"/>
+        <result column="real_end_time" jdbcType="VARCHAR" property="realEndTime"/>
+        <result column="sale_user_uuid" jdbcType="VARCHAR" property="saleUserUuid"/>
+        <result column="class_status" jdbcType="INTEGER" property="classStatus"/>
+        <result column="student_class_status" jdbcType="INTEGER" property="studentClassStatus"/>
+        <result column="cc_class_status" jdbcType="INTEGER" property="ccClassStatus"/>
+        <result column="cr_class_status" jdbcType="INTEGER" property="crClassStatus"/>
+        <result column="push_status" jdbcType="INTEGER" property="pushStatus"/>
+        <result column="hst_room_id" jdbcType="INTEGER" property="hstRoomId"/>
+        <result column="is_send_message" jdbcType="INTEGER" property="isSendMessage"/>
+        <result column="class_type" jdbcType="INTEGER" property="classType"/>
+        <result column="real_length" jdbcType="INTEGER" property="realLength"/>
+        <result column="reason_for_tuning" jdbcType="INTEGER" property="reasonForTuning"/>
+        <result column="root_uuid" jdbcType="VARCHAR" property="rootUuid"/>
+        <result column="parent_uuid" jdbcType="VARCHAR" property="parentUuid"/>
+        <result column="leads_length" jdbcType="INTEGER" property="leadsLength"/>
+        <result column="teacher_length" jdbcType="INTEGER" property="teacherLength"/>
+        <result column="cast_length" jdbcType="INTEGER" property="castLength"/>
+    </resultMap>
+    <sql id="CpCourse_Column_List">
+        id, uuid, course_order_uuid, course_request_uuid, pay_uuid, user_uuid, leads_uuid,
+        course_type, length, course_date, start_time, end_time, is_success, status, create_date,
+        update_date, teacher_uuid, remark, real_start_time, real_end_time, sale_user_uuid,
+        class_status, student_class_status, cc_class_status, cr_class_status, push_status,
+        hst_room_id, is_send_message, class_type, real_length, reason_for_tuning, root_uuid,
+        parent_uuid, leads_length, teacher_length, cast_length
+    </sql>
+    <!-- 根据leadsUuid和课程日期查询未结束课程列表 -->
+    <select id="findNoEndCourseListByLeadsUuidAndCourseDate" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        --         IFNULL(co.subject,'') as subject
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select u.name from user u where u.uuid=c.user_uuid)) as teacherName
+        ,c.uuid as courseUuid
+        ,c.start_time
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') as end_time
+        ,c.course_date
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join class_room clr on clr.course_uuid=c.uuid
+        where c.leads_uuid=#{leadsUuid}
+        and c.student_class_status!=1
+        and c.status = 1
+        and c.course_date=#{courseDate}
+        ORDER BY c.course_date asc,c.start_time asc
+    </select>
+    <select id="findByLeadsUuidAndCourseDate" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        --           IFNULL(co.subject,'') as subject
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select u.name from user u where u.uuid=c.user_uuid)) as teacherName
+        ,c.uuid as courseUuid
+        ,c.course_date
+        ,c.start_time
+        ,c.end_time
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        where c.leads_uuid=#{leadsUuid}
+        and c.status = 1
+        and c.course_date=#{courseDate}
+        ORDER BY c.course_date asc,c.start_time asc
+    </select>
+    <select id="findByCourseDate" parameterType="java.lang.String" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        c.course_date,
+        c.course_type,
+        t.tc_name as teacherName
+        ,l.`name` as studentName
+        ,c.real_length
+        ,c.leads_length
+        ,c.teacher_length
+        ,cr.voice_url
+        ,c.class_status
+        ,c.student_class_status
+        ,t.uuid as teacherUuid
+        ,c.uuid as course_uuid
+        ,cr.track_url
+        from cp_course c
+        LEFT JOIN class_room cr on cr.course_uuid=c.uuid
+        left join tc_teacher t on t.uuid = c.teacher_uuid
+        LEFT JOIN leads l on l.uuid=c.leads_uuid
+        where c.`status`=1 and c.course_date = #{courseDate}
+        and c.class_status != 0 and c.student_class_status != 0
+        and t.tc_name not LIKE '%test%' and t.tc_name not LIKE '%测试%' and t.tc_name NOT like '%演示%'
+        ORDER BY c.course_date;
+    </select>
+    <select id="countSuccessCourseByTeacherUuid" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from cp_course where status=1 and course_type=1 and is_success=1 and teacher_uuid=#{teacherUuid}
+    </select>
+    <select id="findStartedCourseByCourseDate" parameterType="java.lang.String" resultMap="CpCourseResultMap">
+        select
+        <include refid="CpCourse_Column_List"/>
+        from cp_course
+        where status=1 and class_status!=0 and student_class_status!=0 and course_date=#{courseDate}
+    </select>
+    <!--不修改原方法原则，冗余此方法-->
+    <select id="findStartedCourseByCourseDateNew" parameterType="java.lang.String" resultMap="CpCourseResultMap">
+        select
+        <include refid="CpCourse_Column_List"/>
+        from cp_course
+        where status=1 and class_status!=0 and student_class_status!=0
+        <if test="courseDate !=null">
+            and course_date=#{courseDate}
+        </if>
+        <if test="courseUuid !=null">
+            and uuid=#{courseUuid}
+        </if>
+        ORDER BY create_date ASC
+    </select>
+    <select id="findNoEndCourseListByTeacherUuidAndCourseDate" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,c.uuid as course_uuid
+        ,c.course_date
+        ,c.start_time
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') as end_time
+        ,l.name as studentName
+        ,l.sex as studentSex
+        ,co.grade
+        ,co.subject_version
+        ,co.study_status
+        ,co.month_point
+        ,co.term_point
+        ,co.other_point
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where c.teacher_uuid=#{teacherUuid}
+        and c.class_status != 1
+        and c.status = 1
+        and c.course_date=#{courseDate}
+        --         and from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%Y-%m-%d %H:%i') > date_format(now(),'%Y-%m-%d %H:%i')
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <select id="findByByTeacherUuidAndCourseDate" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,l.name as student_name
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where c.teacher_uuid=#{teacherUuid}
+        and c.status = 1
+        and c.course_date=#{courseDate}
+        ORDER BY c.course_date asc,c.start_time asc
+    </select>
+    <select id="findByByTeacherUuidAndCourseDate2" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,l.name as student_name
+        ,c.end_time
+        ,c.course_date
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where c.teacher_uuid=#{teacherUuid}
+        and c.status = 1
+        and c.course_date=#{courseDate}
+        ORDER BY c.course_date asc,c.start_time asc
+    </select>
+    <select id="findCourseDateByTeacherUuidAndYearMonth" resultType="java.lang.String">
+        select course_date from cp_course where status=1 and teacher_uuid=#{teacherUuid} and
+        LEFT(course_date,7)=#{yearMonth}
+    </select>
+    <select id="findCourseDateByLeadsUuidAndYearMonth" resultType="java.lang.String">
+        select course_date from cp_course where status=1 and leads_uuid=#{leadsUuid} and
+        LEFT(course_date,7)=#{yearMonth}
+    </select>
+    <select id="findNoEndDebugCourseByCR" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select name from user u where u.uuid=c.user_uuid)) as teacher_name
+        ,l.name as studentName
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,c.end_time
+        ,c.course_date
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where c.status=1
+        /*  and c.class_type=1*/
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        and c.course_type=2
+        and l.cr_uuid=#{userUuid}
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <select id="countNoEndDebugCourseByCR" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select
+        count(*)
+        from cp_course c
+        left join leads l on l.uuid=c.leads_uuid
+        where c.status=1
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        and c.course_type=2
+        and l.cr_uuid=#{userUuid}
+    </select>
+    <select id="findNoEndDebugCourseByCC" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select name from user u where u.uuid=c.user_uuid)) as teacher_name
+        ,l.name as studentName
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,c.end_time
+        ,c.course_date
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where  c.status=1
+        --         and c.class_status != 1
+        --         and concat(c.course_date,' ',c.end_time) > date_format(now(),'%Y-%m-%d %H:%i')
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        and c.course_type =2
+        and l.cc_uuid=#{userUuid}
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <select id="countNoEndDebugCourseByCC" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select
+        count(*)
+        from cp_course c
+        left join leads l on l.uuid=c.leads_uuid
+        where c.status=1
+        -- and c.class_status != 1
+        -- and concat(c.course_date,' ',c.end_time) > date_format(now(),'%Y-%m-%d %H:%i')
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        and c.course_type =2
+        and l.cc_uuid=#{userUuid}
+    </select>
+    <select id="findNoEndCourseByCR" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select name from user u where u.uuid=c.user_uuid)) as teacher_name
+        ,l.name as studentName
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where c.status=1
+        and c.cr_class_status!=1
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        and c.course_type in (0,1)
+        and l.cr_uuid=#{userUuid}
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate !=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate !=null">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        <if test="courseType !=null">
+            and c.course_type = #{courseType}
+        </if>
+        <if test="userName !='' and userName !=null">
+            and (l.name like "%"#{userName}"%" or t.tc_name like "%"#{userName}"%")
+        </if>
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <select id="findNoEndCourseByCC" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select name from user u where u.uuid=c.user_uuid)) as teacher_name
+        ,l.name as studentName
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where c.status=1
+        and c.cc_class_status!=1
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        and c.course_type =0
+        and l.cr_uuid is null
+        and l.cc_uuid=#{userUuid}
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate !=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate !=null">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        <if test="courseType !=null">
+            and c.course_type = #{courseType}
+        </if>
+        <if test="userName !='' and userName !=null">
+            and (l.name like "%"#{userName}"%" or t.tc_name like "%"#{userName}"%")
+        </if>
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <!-- 质检监课 监听所有学生的调试、测评和正式课列表 -->
+    <select id="findNoEndCourseByQCMonitor" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select name from user u where u.uuid=c.user_uuid)) as teacher_name
+        ,l.name as studentName
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where c.status=1
+        and c.student_class_status!=1
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate !=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate !=null">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        <if test="courseType !=null">
+            and c.course_type = #{courseType}
+        </if>
+        <if test="userName !='' and userName !=null">
+            and (l.name like "%"#{userName}"%" or t.tc_name like "%"#{userName}"%")
+        </if>
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <!-- 家长监听自己孩子的测评和正式课列表 -->
+    <select id="findNoEndCourseByPatriarchMonitor" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,t.tc_name as teacher_name
+        ,l.name as studentName
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join leads l on l.uuid=c.leads_uuid
+        left join patriarch_leads pl on pl.leads_uuid=c.leads_uuid and pl.status=1
+        where c.status=1
+        and c.student_class_status!=1
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        and c.course_type in(0,1)
+        and pl.patriarch_uuid=#{patriarchUuid}
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <!-- 教学监课：测评课和正式课 -->
+    <select id="findNoEndCourse" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,t.tc_name as teacher_name
+        ,l.name as studentName
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where c.status=1
+        and c.student_class_status!=1
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        and c.course_type in (0,1)
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate !=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate !=null">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        <if test="courseType !=null">
+            and c.course_type = #{courseType}
+        </if>
+        <if test="userName !='' and userName !=null">
+            and (l.name like "%"#{userName}"%" or t.tc_name like "%"#{userName}"%")
+        </if>
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <!-- 当前课程未结束数 -->
+    <select id="countNoEndCourseByUuid" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from cp_course
+        where status=1
+        and class_status != 1
+        and concat(course_date,' ',end_time) > date_format(now(),'%Y-%m-%d %H:%i')
+        and uuid=#{courseUuid}
+    </select>
+    <!-- 学生上课记录列表（一对多）-->
+    <select id="findStudentCourseRecordList" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        co.subject
+        ,t.tc_name as teacher_name
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.end_time
+        ,c.course_date
+        ,c.real_start_time
+        ,c.real_end_time
+        ,ca.class_appraise_uuid
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from course_leads cl
+        LEFT JOIN cp_course c on c.uuid=cl.course_uuid
+        LEFT JOIN cp_course_order co on co.uuid=cl.course_order_uuid
+        LEFT JOIN tc_teacher t on t.uuid=c.teacher_uuid
+        left join class_appraise ca on ca.course_uuid=cl.course_uuid and ca.appraiser_identity=1 and
+        ca.appraiser_uuid=cl.leads_uuid
+        where cl.leads_uuid=#{leadsUuid}
+        and (c.class_status = 1
+        or concat(c.course_date,' ',c.end_time) &lt; date_format(now(),'%Y-%m-%d %H:%i')
+        )
+        and c.class_type=2
+        and c.status=1
+        <if test="subject !='' and subject!=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate!=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate!=null">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        ORDER BY c.course_date desc,c.start_time desc
+        limit #{startSize},#{pageSize}
+    </select>
+    <!-- 学生上课记录数（一对多）-->
+    <select id="countStudentCourseRecordList" resultType="java.lang.Long">
+        select
+        count(*)
+        from course_leads cl
+        LEFT JOIN cp_course c on c.uuid=cl.course_uuid
+        LEFT JOIN cp_course_order co on co.uuid=cl.course_order_uuid
+        where cl.leads_uuid=#{leadsUuid}
+        and (c.class_status = 1
+        or concat(c.course_date,' ',c.end_time) &lt; date_format(now(),'%Y-%m-%d %H:%i')
+        )
+        and c.class_type=2
+        and c.status=1
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate !=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate !=null ">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+    </select>
+    <!-- 学生上课记录（测评课和正式课）列表（一对一） -->
+    <select id="findStudentCourseRecordV1List" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select name from user u where u.uuid=c.user_uuid)) as teacher_name
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,ca.class_appraise_uuid
+        ,cta.class_teacher_appraise_uuid
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join class_appraise ca on ca.course_uuid=c.uuid and ca.appraiser_identity=1 and
+        ca.appraiser_uuid=c.leads_uuid
+        left join class_teacher_appraise cta on cta.course_uuid=c.uuid and cta.appraiser_uuid=c.teacher_uuid
+        where c.leads_uuid=#{leadsUuid}
+        and (
+        c.student_class_status=1
+        or c.course_date <![CDATA[ <= ]]> date_format(now(),'%Y-%m-%d')
+        )
+        and c.status=1
+        and (c.course_type=0 or c.course_type=1)
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate !=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate !=null ">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        ORDER BY c.course_date desc,c.start_time desc
+        limit #{startSize},#{pageSize}
+    </select>
+    <!-- 学生上课记录（测评课和正式课）列表（一对一）新增只返回能正常回放的 -->
+    <select id="findStudentCourseRecordV1ListNew" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select name from user u where u.uuid=c.user_uuid)) as teacher_name
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,ca.class_appraise_uuid
+        ,cta.class_teacher_appraise_uuid
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join class_appraise ca on ca.course_uuid=c.uuid and ca.appraiser_identity=1 and
+        ca.appraiser_uuid=c.leads_uuid
+        left join class_teacher_appraise cta on cta.course_uuid=c.uuid and cta.appraiser_uuid=c.teacher_uuid
+        where c.leads_uuid=#{leadsUuid}
+        and (
+        c.student_class_status=1
+        or c.course_date <![CDATA[ <= ]]> date_format(now(),'%Y-%m-%d')
+        )
+        and c.status=1
+        and (c.course_type=0 or c.course_type=1) and clr.statistics_status=2 AND (
+        (
+        clr.track_url IS NOT NULL
+        AND clr.voice_duration IS NOT NULL
+        )
+        OR (track_oss_key IS NOT NULL)
+        )
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate !=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate !=null ">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        ORDER BY c.course_date desc,c.start_time desc
+        <!-- limit #{startSize},#{pageSize} -->
+    </select>
+    <!-- 教师上课记录列表（一对一） -->
+    <select id="findTeacherCourseRecordV1List" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        c.uuid as course_uuid
+        ,c.course_date
+        ,c.start_time
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,l.`name` as studentName
+        ,c.course_type
+        ,IFNULL(c.real_length,0) as classTime
+        ,cta.class_teacher_appraise_uuid
+        ,co.grade
+        ,co.subject_version
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        LEFT JOIN cp_course_order co ON c.course_order_uuid = co.uuid
+        left join class_teacher_appraise cta on cta.course_uuid=c.uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where
+        (c.class_status=1
+        or c.course_date <![CDATA[ <= ]]> date_format(now(),'%Y-%m-%d')
+        )
+        and c.teacher_uuid=#{teacherUuid}
+        and c.status=1
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate !=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate !=null">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        <if test="courseType !=null">
+            and c.course_type = #{courseType}
+        </if>
+        ORDER BY c.course_date desc,c.start_time desc
+        limit #{startSize},#{pageSize}
+    </select>
+    <!-- 教师上课记录列表（一对一）新增方法只查能正常回放的 -->
+    <select id="findTeacherCourseRecordV1ListNew" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        c.uuid as course_uuid
+        ,c.course_date
+        ,c.start_time
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,l.`name` as studentName
+        ,c.course_type
+        ,IFNULL(c.real_length,0) as classTime
+        ,cta.class_teacher_appraise_uuid
+        ,co.grade
+        ,co.subject_version
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        ,clr.class_room_uuid
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        LEFT JOIN cp_course_order co ON c.course_order_uuid = co.uuid
+        left join class_teacher_appraise cta on cta.course_uuid=c.uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where
+        (c.class_status=1
+        or c.course_date <![CDATA[ <= ]]> date_format(now(),'%Y-%m-%d')
+        )
+        and c.teacher_uuid=#{teacherUuid}
+        and c.status=1 and clr.statistics_status=2 AND (
+        (
+        clr.track_url IS NOT NULL
+        AND clr.voice_duration IS NOT NULL
+        )
+        OR (track_oss_key IS NOT NULL)
+        )
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate !=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate !=null">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        <if test="courseType !=null">
+            and c.course_type = #{courseType}
+        </if>
+        ORDER BY c.course_date desc,c.start_time desc
+        <!--limit #{startSize},#{pageSize} -->
+    </select>
+    <!-- 教师上课记录列表（一对一）一天天的查 -->
+    <select id="findTeacherCourseRecordV1OneDay" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        c.uuid as courseUuid
+        ,c.course_date
+        ,c.start_time
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,l.`name` as studentName
+        ,c.course_type
+        ,IFNULL(c.real_length,0) as classTime
+        ,cta.class_teacher_appraise_uuid
+        ,co.grade
+        ,co.subject_version
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        ,clr.class_room_uuid
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        LEFT JOIN cp_course_order co ON c.course_order_uuid = co.uuid
+        left join class_teacher_appraise cta on cta.course_uuid=c.uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where
+        (c.class_status=1
+        or c.course_date <![CDATA[ <= ]]> date_format(now(),'%Y-%m-%d')
+        )
+        and c.teacher_uuid=#{teacherUuid}
+        and c.status=1 and clr.statistics_status=2 and clr.track_url IS NOT NULL and clr.voice_duration IS NOT NULL
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="courseDate !='' and courseDate !=null">
+            and c.course_date =#{courseDate}
+        </if>
+
+        <if test="courseType !=null">
+            and c.course_type = #{courseType}
+        </if>
+        ORDER BY c.course_date desc,c.start_time desc
+    </select>
+    <!-- 分页查询教师未结束课程列表（一对一） -->
+    <select id="findTeacherNoEndV1Course" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select name from user u where u.uuid=c.user_uuid)) as teacher_name
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,c.real_start_time
+        ,c.real_end_time
+        ,co.grade
+        ,c.course_type
+        ,l.name as student_name
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where c.class_status != 1
+        and c.status=1
+        and c.teacher_uuid=#{teacherUuid}
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <!-- 分页查询学生未结束课程列表 -->
+    <select id="findNoEndCourseByLeadsUuid" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select name from user u where u.uuid=c.user_uuid)) as teacher_name
+        ,c.uuid as course_uuid
+        ,c.user_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,c.real_start_time
+        ,c.real_end_time
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        where c.leads_uuid=#{leadsUuid}
+        and c.student_class_status!=1
+        and c.status=1
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <!-- 查询课程开始时间是否在当前时间二十分钟内，是:返回课程信息，否:返回null -->
+    <select id="findStartByUuid" parameterType="java.lang.String" resultMap="CpCourseResultMap">
+        select
+        <include refid="CpCourse_Column_List"/>
+        from cp_course
+        where status=1
+        and concat(course_date,' ',start_time) <![CDATA[ <= ]]> date_format(
+        ADDDATE(now(),INTERVAL 20 minute),'%Y-%m-%d %H:%i'
+        )
+        and uuid=#{courseUuid}
+    </select>
+    <!-- 分页查询教师未结束课程 一对多 -->
+    <select id="findTeacherNoEndCourse" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        t.tc_name as teacher_name
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.end_time
+        ,c.course_date
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        where c.class_status != 1
+        and c.status=1
+        and c.teacher_uuid=#{teacherUuid}
+        and c.class_type=2
+        and concat(c.course_date,' ',c.end_time) > date_format(now(),'%Y-%m-%d %H:%i')
+        ORDER BY c.course_date asc,c.start_time asc
+        limit #{startSize},#{pageSize}
+    </select>
+    <!-- 教师未结束课程数 一对多 -->
+    <select id="countTeacherNoEndCourse" parameterType="java.lang.String" resultType="java.lang.Long">
+        select
+        count(*)
+        from cp_course c
+        where c.class_status != 1
+        and c.status=1
+        and c.teacher_uuid=#{teacherUuid}
+        and c.class_type=2
+        and concat(c.course_date,' ',c.end_time) > date_format(now(),'%Y-%m-%d %H:%i')
+    </select>
+    <!-- 根据teacherUuid和课程日期查询未结束课程列表 -->
+    <select id="findStudentNoEndCourseListByTeacherUuidAndCourseDate" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,l.name as student_name
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,c.real_start_time
+        ,c.real_end_time
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join leads l on l.uuid=c.leads_uuid
+        where c.teacher_uuid=#{teacherUuid}
+        and c.class_status != 1
+        and c.status = 1
+        and c.course_date=#{courseDate}
+       --  and from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') > date_format(now(),'%H:%i')
+        ORDER BY c.course_date asc,c.start_time asc
+    </select>
+    <!-- 根据teacherUuid和课程级别查询消耗总课时 -->
+    <select id="findClassTimeByTeacherUuidAndCourseLevel" resultType="java.lang.Double">
+        select
+        IFNULL(SUM(convert(c.real_length/60,decimal(6,1))),0.0)
+        from cp_course c
+        left join cp_pay_request pr on pr.uuid=c.pay_uuid
+        where c.`status`=1 and c.course_type=1 and pr.course_level=#{courseLevel} and c.teacher_uuid=#{teacherUuid}
+    </select>
+    <!-- 教师课程总节数 -->
+    <select id="countCourseByTeacherUuid" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*)
+        from cp_course
+        where status=1 and course_type=1 and teacher_uuid=#{teacherUuid}
+    </select>
+    <!-- 教师没有参加课程的节数 -->
+    <select id="countTeacherNoJoinClassCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*)
+        from cp_course
+        where status=1 and course_type=1 and class_status =0 and teacher_uuid=#{teacherUuid}
+        and concat(course_date,' ',end_time) <![CDATA[ <= ]]> date_format(now(),'%Y-%m-%d %H:%i')
+    </select>
+    <!-- 小于消耗课时的教师数 -->
+    <select id="countLessClassTimeTeacher" parameterType="java.lang.Double" resultType="java.lang.Integer">
+        select count(*) from (
+        select
+        IFNULL(SUM(convert(c.real_length/60,decimal(6,1))),0.0) as class_time
+        from cp_course c
+        where c.`status`=1 and c.course_type=1
+        group by c.teacher_uuid
+        ) t where t.class_time <![CDATA[ < ]]> #{classTime}
+    </select>
+    <!-- 本月小于消耗课时的教师数 -->
+    <select id="countLessClassTimeTeacherByMonthDate" resultType="java.lang.Integer">
+        select count(*) from (
+        select
+        IFNULL(SUM(convert(c.real_length/60,decimal(6,1))),0.0) as class_time
+        from cp_course c
+        where c.`status`=1 and c.course_type=1 and LEFT(c.course_date,7)=#{monthDate}
+        group by c.teacher_uuid
+        ) t where t.class_time <![CDATA[ < ]]> #{classTime}
+    </select>
+    <!-- 所有有排课的教师总数 -->
+    <select id="countCourseTeacher" resultType="java.lang.Integer">
+        select
+        count(DISTINCT teacher_uuid)
+        from cp_course
+        where status=1 and course_type=1
+    </select>
+    <!-- 本月所有有排课的教师总数 -->
+    <select id="countCourseTeacherByMonthDate" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select
+        count(DISTINCT teacher_uuid)
+        from cp_course
+        where status=1 and course_type=1 and LEFT(course_date,7)=#{monthDate}
+    </select>
+    <!-- 查询老师消耗的总课时(正式课) -->
+    <select id="findClassTimeByTeacherUuid" parameterType="java.lang.String" resultType="java.lang.Double">
+        select
+        IFNULL(SUM(convert(c.real_length/60,decimal(6,1))),0.0) as class_time
+        from cp_course c
+        where c.`status`=1 and c.course_type=1 and c.teacher_uuid=#{teacherUuid}
+    </select>
+    <!-- 查询老师消耗的本月总课时(正式课) -->
+    <select id="findClassTimeByTeacherUuidAndMonthDate" resultType="java.lang.Double">
+        select
+        IFNULL(SUM(convert(c.real_length/60,decimal(6,2))),0.00) as class_time
+        from cp_course c
+        where c.`status`=1 and c.course_type=1 and c.teacher_uuid=#{teacherUuid} and LEFT(c.course_date,7)=#{monthDate}
+    </select>
+    <!-- 根据leadsUuid和课程日期查询未结束课程列表 -->
+    <select id="findStudentNoEndCourseListByLeadsUuidAndCourseDate" resultType="cn.onlyhi.client.dto.CourseDto">
+        select
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,IFNULL(t.tc_name,(select name from user u where u.uuid=c.user_uuid)) as teacher_name
+        ,c.uuid as course_uuid
+        ,c.start_time
+        ,c.teacher_uuid
+        ,c.leads_uuid
+        ,from_unixtime(UNIX_TIMESTAMP(concat(c.course_date,' ',c.end_time))+IFNULL(clr.overtime,0)*60,'%H:%i') end_time
+        ,c.course_date
+        ,c.real_start_time
+        ,c.real_end_time
+        ,co.grade
+        ,c.course_type
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        from cp_course c
+        left join class_room clr on clr.course_uuid=c.uuid
+        left join cp_course_order co on c.course_order_uuid = co.uuid
+        left join tc_teacher t on t.uuid=c.teacher_uuid
+        where c.leads_uuid=#{leadsUuid}
+        and c.student_class_status!=1
+        and c.status = 1
+        and c.course_date=#{courseDate}
+        --         and c.end_time > date_format(now(),'%H:%i')
+        and c.course_date >= date_format(now(),'%Y-%m-%d')
+        ORDER BY c.course_date asc,c.start_time asc
+    </select>
+    <!-- 根据leadsUuid和课程级别查询消耗总课时 -->
+    <select id="findClassTimeByLeadsUuidAndCourseLevel" resultType="java.lang.Double">
+        select
+        IFNULL(SUM(convert(c.real_length/60,decimal(6,1))),0.0)
+        from cp_course c
+        left join cp_pay_request pr on pr.uuid=c.pay_uuid
+        where c.`status`=1 and c.course_type=1 and pr.course_level=#{courseLevel} and c.leads_uuid=#{leadsUuid}
+    </select>
+    <!-- 学生课程的总节数 -->
+    <select id="countCourseByLeadsUuid" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*)
+        from cp_course
+        where STATUS=1 and course_type=1 and leads_uuid=#{leadsUuid}
+    </select>
+    <!-- 本月学生课程的总节数 -->
+    <select id="countCourseByLeadsUuidByMonthDate" resultType="java.lang.Integer">
+        select count(*)
+        from cp_course
+        where STATUS=1 and course_type=1 and leads_uuid=#{leadsUuid} and LEFT(course_date,7)=#{monthDate}
+    </select>
+    <!-- 查询学生未参加课程的节数 -->
+    <select id="countNoJoinClassCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*)
+        from cp_course
+        where status=1 and course_type=1 and class_status=0 and leads_uuid=#{leadsUuid}
+        and concat(course_date,' ',end_time) <![CDATA[ <= ]]> date_format(now(),'%Y-%m-%d %H:%i')
+    </select>
+    <!-- 查询本月学生未参加课程的节数 -->
+    <select id="countNoJoinClassCountByMonthDate" resultType="java.lang.Integer">
+        select count(*)
+        from cp_course
+        where status=1 and course_type=1 and class_status=0 and leads_uuid=#{leadsUuid} and LEFT(course_date,7)=#{monthDate}
+        --         and concat(course_date,' ',end_time) <![CDATA[ <= ]]> date_format(now(),'%Y-%m-%d %H:%i')
+    </select>
+    <!-- 小于消耗课时的学生数 -->
+    <select id="countLessClassTimeLeads" parameterType="java.lang.Double" resultType="java.lang.Integer">
+        select count(*) from (
+        select
+        IFNULL(SUM(convert(c.real_length/60,decimal(6,1))),0.0) as class_time
+        from cp_course c
+        where c.`status`=1 and c.course_type=1
+        group by c.leads_uuid
+        ) t where t.class_time <![CDATA[ < ]]> #{classTime}
+    </select>
+    <!-- 本月小于消耗课时的学生数 -->
+    <select id="countLessClassTimeLeadsByMonthDate" resultType="java.lang.Integer">
+        select count(*) from (
+        select
+        IFNULL(SUM(convert(c.real_length/60,decimal(6,1))),0.0) as class_time
+        from cp_course c
+        where c.`status`=1 and c.course_type=1 and LEFT(c.course_date,7)=#{monthDate}
+        group by c.leads_uuid
+        ) t where t.class_time <![CDATA[ < ]]> #{classTime}
+    </select>
+    <!-- 所有有排课的学生总数 -->
+    <select id="countCourseLeads" resultType="java.lang.Integer">
+        select
+        count(DISTINCT leads_uuid)
+        from cp_course
+        where status=1 and course_type=1
+    </select>
+    <!-- 本月所有有排课的学生总数 -->
+    <select id="countCourseLeadsByMonthDate" resultType="java.lang.Integer">
+        select
+        count(DISTINCT leads_uuid)
+        from cp_course
+        where status=1 and course_type=1 and LEFT(course_date,7)=#{monthDate}
+    </select>
+    <!-- 查询leadsUuid消耗的课时 -->
+    <select id="findClassTimeByLeadsUuid" parameterType="java.lang.String" resultType="java.lang.Double">
+        select
+        IFNULL(SUM(convert(c.real_length/60,decimal(6,1))),0.0) as class_time
+        from cp_course c
+        where c.`status`=1 and c.course_type=1 and c.leads_uuid=#{leadsUuid}
+    </select>
+    <!-- 查询leadsUuid本月消耗的课时 -->
+    <select id="findClassTimeByLeadsUuidAndMonth" resultType="java.lang.Double">
+        select
+        IFNULL(SUM(convert(c.real_length/60,decimal(6,1))),0.0) as class_time
+        from cp_course c
+        where c.`status`=1 and c.course_type=1 and c.leads_uuid=#{leadsUuid} and LEFT(c.course_date,7)=#{monthDate}
+    </select>
+    <!-- 老师上课记录总数 一对多 -->
+    <select id="countTeacherCourseRecordList" resultType="java.lang.Long">
+        select count(*) from (
+        select
+        c.uuid
+        ,c.course_date
+        ,c.start_time
+        ,c.end_time
+        ,co.`subject`
+        ,group_concat(l.`name`)
+        ,IFNULL(c.real_length,0) as classTime
+        from cp_course c
+        LEFT JOIN course_leads cl on cl.course_uuid=c.uuid
+        LEFT JOIN cp_course_order co ON co.uuid = cl.course_order_uuid
+        left join leads l on l.uuid=cl.leads_uuid
+        where
+        (c.class_status=1
+        or concat(c.course_date,' ',c.end_time) <![CDATA[ <= ]]> date_format(now(),'%Y-%m-%d %H:%i')
+        )
+        and c.teacher_uuid=#{teacherUuid}
+        and c.class_type=2
+        and c.status=1
+        <if test="subject !='' and subject!=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate!=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate!=null">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        GROUP BY c.uuid
+        ) t
+    </select>
+    <!-- 老师上课记录列表 一对多 -->
+    <select id="findTeacherCourseRecordList" resultType="cn.onlyhi.client.dto.CourseRecordDto">
+        select
+        c.uuid as course_uuid
+        ,c.course_date
+        ,c.start_time
+        ,c.end_time
+        ,co.`subject`
+        ,group_concat(l.`name`) as name
+        ,c.course_type
+        ,IFNULL(c.real_length,0) as classTime
+        from cp_course c
+        LEFT JOIN course_leads cl on cl.course_uuid=c.uuid
+        LEFT JOIN cp_course_order co ON co.uuid = cl.course_order_uuid
+        left join leads l on l.uuid=cl.leads_uuid
+        where
+        (c.class_status=1
+        or concat(c.course_date,' ',c.end_time) <![CDATA[ <= ]]> date_format(now(),'%Y-%m-%d %H:%i')
+        )
+        and c.teacher_uuid=#{teacherUuid}
+        and c.class_type=2
+        and c.status=1
+        <if test="subject !='' and subject !=null">
+            and co.`subject`=#{subject}
+        </if>
+        <if test="startDate !='' and startDate !=null">
+            and c.course_date >=#{startDate}
+        </if>
+        <if test="endDate !='' and endDate !=null">
+            and c.course_date <![CDATA[ <= ]]> #{endDate}
+        </if>
+        GROUP BY c.course_date desc,c.start_time desc
+        limit #{startSize},#{pageSize}
+    </select>
+    <select id="findCourseDetailsByUuid" parameterType="java.lang.String" resultType="cn.onlyhi.client.dto.CourseDto">
+        SELECT
+        IFNULL(co.subject,case course_type when 0 then '测评课' when 1 then '正式课' else '调试课' end) as subject
+        ,co.grade
+        ,c.class_status
+        ,c.student_class_status
+        ,c.cc_class_status
+        ,c.cr_class_status
+        ,t.tc_name AS teacher_name
+        FROM
+        cp_course c
+        LEFT JOIN cp_course_order co ON c.course_order_uuid = co.uuid
+        LEFT JOIN tc_teacher t ON t.uuid = c.teacher_uuid
+        WHERE
+        c.uuid = #{courseUuid}
+    </select>
+    <update id="updatePushStatus">
+        update cp_course set push_status=1
+        <where>
+            push_status=0 and
+            leads_uuid in
+            <trim prefix="(" suffix=")">
+                <foreach collection="leadsUuidList" item="leadsUuid" index="index" separator=",">
+                    #{leadsUuid}
+                </foreach>
+            </trim>
+        </where>
+    </update>
+    <select id="selectStudentNoPushMessageCourseList" resultMap="CpCourseResultMap">
+        select
+        <include refid="CpCourse_Column_List"/>
+        from cp_course
+        where class_status != 1
+        and student_class_status!=1
+        and concat(course_date,' ',start_time) > date_format(now(),'%Y-%m-%d %H:%i')
+        and push_status =0
+        and status=1
+    </select>
+    <select id="selectCourseInfoByLeadsUuid" resultType="cn.onlyhi.client.dto.CourseInfoDto"
+            parameterType="java.lang.String">
+        SELECT
+        concat(cp.type,cp.length) as class_package_name
+        ,pr.buy_length as total_time
+        ,c.course_date
+        ,c.start_time
+        ,c.end_time
+        ,c.uuid as course_uuid
+        FROM cp_course c
+        inner JOIN cp_pay_request pr ON pr.uuid = c.pay_uuid AND pr.is_pay = 1 AND pr.status=1
+        left JOIN cp_course_price cp ON cp.uuid = pr.course_price_uuid
+        WHERE c.leads_uuid = #{leadsUuid}
+        and c.status=1
+    </select>
+    <update id="updateClassStatus">
+        update cp_course c
+        set c.class_status = #{classStatus}
+        WHERE c.uuid = #{courseUuid}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="CpCourseResultMap">
+        select
+        <include refid="CpCourse_Column_List"/>
+        from cp_course
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from cp_course
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertSelective" parameterType="cn.onlyhi.client.po.CpCourse">
+        insert into cp_course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+            <if test="courseOrderUuid != null">
+                course_order_uuid,
+            </if>
+            <if test="courseRequestUuid != null">
+                course_request_uuid,
+            </if>
+            <if test="payUuid != null">
+                pay_uuid,
+            </if>
+            <if test="userUuid != null">
+                user_uuid,
+            </if>
+            <if test="leadsUuid != null">
+                leads_uuid,
+            </if>
+            <if test="courseType != null">
+                course_type,
+            </if>
+            <if test="length != null">
+                length,
+            </if>
+            <if test="courseDate != null">
+                course_date,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="isSuccess != null">
+                is_success,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="teacherUuid != null">
+                teacher_uuid,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="realStartTime != null">
+                real_start_time,
+            </if>
+            <if test="realEndTime != null">
+                real_end_time,
+            </if>
+            <if test="saleUserUuid != null">
+                sale_user_uuid,
+            </if>
+            <if test="classStatus != null">
+                class_status,
+            </if>
+            <if test="studentClassStatus != null">
+                student_class_status,
+            </if>
+            <if test="ccClassStatus != null">
+                cc_class_status,
+            </if>
+            <if test="crClassStatus != null">
+                cr_class_status,
+            </if>
+            <if test="pushStatus != null">
+                push_status,
+            </if>
+            <if test="hstRoomId != null">
+                hst_room_id,
+            </if>
+            <if test="isSendMessage != null">
+                is_send_message,
+            </if>
+            <if test="classType != null">
+                class_type,
+            </if>
+            <if test="realLength != null">
+                real_length,
+            </if>
+            <if test="reasonForTuning != null">
+                reason_for_tuning,
+            </if>
+            <if test="rootUuid != null">
+                root_uuid,
+            </if>
+            <if test="parentUuid != null">
+                parent_uuid,
+            </if>
+            <if test="leadsLength != null">
+                leads_length,
+            </if>
+            <if test="teacherLength != null">
+                teacher_length,
+            </if>
+            <if test="castLength != null">
+                cast_length,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseOrderUuid != null">
+                #{courseOrderUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseRequestUuid != null">
+                #{courseRequestUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="payUuid != null">
+                #{payUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userUuid != null">
+                #{userUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsUuid != null">
+                #{leadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseType != null">
+                #{courseType,jdbcType=INTEGER},
+            </if>
+            <if test="length != null">
+                #{length,jdbcType=VARCHAR},
+            </if>
+            <if test="courseDate != null">
+                #{courseDate,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=VARCHAR},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=VARCHAR},
+            </if>
+            <if test="isSuccess != null">
+                #{isSuccess,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teacherUuid != null">
+                #{teacherUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="realStartTime != null">
+                #{realStartTime,jdbcType=VARCHAR},
+            </if>
+            <if test="realEndTime != null">
+                #{realEndTime,jdbcType=VARCHAR},
+            </if>
+            <if test="saleUserUuid != null">
+                #{saleUserUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="classStatus != null">
+                #{classStatus,jdbcType=INTEGER},
+            </if>
+            <if test="studentClassStatus != null">
+                #{studentClassStatus,jdbcType=INTEGER},
+            </if>
+            <if test="ccClassStatus != null">
+                #{ccClassStatus,jdbcType=INTEGER},
+            </if>
+            <if test="crClassStatus != null">
+                #{crClassStatus,jdbcType=INTEGER},
+            </if>
+            <if test="pushStatus != null">
+                #{pushStatus,jdbcType=INTEGER},
+            </if>
+            <if test="hstRoomId != null">
+                #{hstRoomId,jdbcType=INTEGER},
+            </if>
+            <if test="isSendMessage != null">
+                #{isSendMessage,jdbcType=INTEGER},
+            </if>
+            <if test="classType != null">
+                #{classType,jdbcType=INTEGER},
+            </if>
+            <if test="realLength != null">
+                #{realLength,jdbcType=INTEGER},
+            </if>
+            <if test="reasonForTuning != null">
+                #{reasonForTuning,jdbcType=INTEGER},
+            </if>
+            <if test="rootUuid != null">
+                #{rootUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="parentUuid != null">
+                #{parentUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsLength != null">
+                #{leadsLength,jdbcType=INTEGER},
+            </if>
+            <if test="teacherLength != null">
+                #{teacherLength,jdbcType=INTEGER},
+            </if>
+            <if test="castLength != null">
+                #{castLength,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.onlyhi.client.po.CpCourse">
+        update cp_course
+        <set>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseOrderUuid != null">
+                course_order_uuid = #{courseOrderUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseRequestUuid != null">
+                course_request_uuid = #{courseRequestUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="payUuid != null">
+                pay_uuid = #{payUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userUuid != null">
+                user_uuid = #{userUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsUuid != null">
+                leads_uuid = #{leadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseType != null">
+                course_type = #{courseType,jdbcType=INTEGER},
+            </if>
+            <if test="length != null">
+                length = #{length,jdbcType=VARCHAR},
+            </if>
+            <if test="courseDate != null">
+                course_date = #{courseDate,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=VARCHAR},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=VARCHAR},
+            </if>
+            <if test="isSuccess != null">
+                is_success = #{isSuccess,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teacherUuid != null">
+                teacher_uuid = #{teacherUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="realStartTime != null">
+                real_start_time = #{realStartTime,jdbcType=VARCHAR},
+            </if>
+            <if test="realEndTime != null">
+                real_end_time = #{realEndTime,jdbcType=VARCHAR},
+            </if>
+            <if test="saleUserUuid != null">
+                sale_user_uuid = #{saleUserUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="classStatus != null">
+                class_status = #{classStatus,jdbcType=INTEGER},
+            </if>
+            <if test="studentClassStatus != null">
+                student_class_status = #{studentClassStatus,jdbcType=INTEGER},
+            </if>
+            <if test="ccClassStatus != null">
+                cc_class_status = #{ccClassStatus,jdbcType=INTEGER},
+            </if>
+            <if test="crClassStatus != null">
+                cr_class_status = #{crClassStatus,jdbcType=INTEGER},
+            </if>
+            <if test="pushStatus != null">
+                push_status = #{pushStatus,jdbcType=INTEGER},
+            </if>
+            <if test="hstRoomId != null">
+                hst_room_id = #{hstRoomId,jdbcType=INTEGER},
+            </if>
+            <if test="isSendMessage != null">
+                is_send_message = #{isSendMessage,jdbcType=INTEGER},
+            </if>
+            <if test="classType != null">
+                class_type = #{classType,jdbcType=INTEGER},
+            </if>
+            <if test="realLength != null">
+                real_length = #{realLength,jdbcType=INTEGER},
+            </if>
+            <if test="reasonForTuning != null">
+                reason_for_tuning = #{reasonForTuning,jdbcType=INTEGER},
+            </if>
+            <if test="rootUuid != null">
+                root_uuid = #{rootUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="parentUuid != null">
+                parent_uuid = #{parentUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsLength != null">
+                leads_length = #{leadsLength,jdbcType=INTEGER},
+            </if>
+            <if test="teacherLength != null">
+                teacher_length = #{teacherLength,jdbcType=INTEGER},
+            </if>
+            <if test="castLength != null">
+                cast_length = #{castLength,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="CpCourseResultMap">
+        select
+        <include refid="CpCourse_Column_List"/>
+        from cp_course
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByUuidSelective" parameterType="cn.onlyhi.client.po.CpCourse">
+        update cp_course
+        <set>
+            <if test="courseOrderUuid != null">
+                course_order_uuid = #{courseOrderUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseRequestUuid != null">
+                course_request_uuid = #{courseRequestUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="payUuid != null">
+                pay_uuid = #{payUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="userUuid != null">
+                user_uuid = #{userUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsUuid != null">
+                leads_uuid = #{leadsUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="courseType != null">
+                course_type = #{courseType,jdbcType=INTEGER},
+            </if>
+            <if test="length != null">
+                length = #{length,jdbcType=VARCHAR},
+            </if>
+            <if test="courseDate != null">
+                course_date = #{courseDate,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=VARCHAR},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=VARCHAR},
+            </if>
+            <if test="isSuccess != null">
+                is_success = #{isSuccess,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teacherUuid != null">
+                teacher_uuid = #{teacherUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="realStartTime != null">
+                real_start_time = #{realStartTime,jdbcType=VARCHAR},
+            </if>
+            <if test="realEndTime != null">
+                real_end_time = #{realEndTime,jdbcType=VARCHAR},
+            </if>
+            <if test="saleUserUuid != null">
+                sale_user_uuid = #{saleUserUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="classStatus != null">
+                class_status = #{classStatus,jdbcType=INTEGER},
+            </if>
+            <if test="studentClassStatus != null">
+                student_class_status = #{studentClassStatus,jdbcType=INTEGER},
+            </if>
+            <if test="ccClassStatus != null">
+                cc_class_status = #{ccClassStatus,jdbcType=INTEGER},
+            </if>
+            <if test="crClassStatus != null">
+                cr_class_status = #{crClassStatus,jdbcType=INTEGER},
+            </if>
+            <if test="pushStatus != null">
+                push_status = #{pushStatus,jdbcType=INTEGER},
+            </if>
+            <if test="hstRoomId != null">
+                hst_room_id = #{hstRoomId,jdbcType=INTEGER},
+            </if>
+            <if test="isSendMessage != null">
+                is_send_message = #{isSendMessage,jdbcType=INTEGER},
+            </if>
+            <if test="classType != null">
+                class_type = #{classType,jdbcType=INTEGER},
+            </if>
+            <if test="realLength != null">
+                real_length = #{realLength,jdbcType=INTEGER},
+            </if>
+            <if test="reasonForTuning != null">
+                reason_for_tuning = #{reasonForTuning,jdbcType=INTEGER},
+            </if>
+            <if test="rootUuid != null">
+                root_uuid = #{rootUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="parentUuid != null">
+                parent_uuid = #{parentUuid,jdbcType=VARCHAR},
+            </if>
+            <if test="leadsLength != null">
+                leads_length = #{leadsLength,jdbcType=INTEGER},
+            </if>
+            <if test="teacherLength != null">
+                teacher_length = #{teacherLength,jdbcType=INTEGER},
+            </if>
+            <if test="castLength != null">
+                cast_length = #{castLength,jdbcType=INTEGER},
+            </if>
+        </set>
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </update>
+    <!--技术支持登陆后课程列表-->
+    <select id="selectTodayCourse" resultType="cn.onlyhi.client.dto.TodayCourseEntity"
+            parameterType="cn.onlyhi.client.dto.TodayCourseVo">
+        SELECT
+        ke.id,
+        ke.uuid courseUuid,
+        l.`name` studentName,
+        ke.course_date courseDate,
+        ke.start_time startTime,
+        ke.end_time endTime,
+        t.tc_name teacherName,
+        o.`subject`,
+        o.grade,
+        /* case ke.course_type
+        WHEN '0' THEN
+        '测评课'
+        WHEN '1' THEN
+        '正式课'
+        WHEN '2' THEN
+        '调试课'
+        END courseType*/
+        ke.course_type courseType
+        FROM
+        cp_course ke
+        LEFT JOIN leads l ON ke.leads_uuid = l.uuid
+        LEFT JOIN tc_teacher t ON ke.teacher_uuid = t.uuid
+        LEFT JOIN cp_course_order o ON ke.course_order_uuid = o.uuid
+        WHERE
+        ke.course_date >= CURDATE()
+        AND ke.course_date <![CDATA[ <= ]]> DATE_SUB(CURDATE(), INTERVAL - 1 DAY)
+        <if test="name != null and name != '' ">
+            AND (l.`name` like "%"#{name}"%" or t.tc_name like "%"#{name}"%")
+        </if>
+        <if test="phone != null and phone != '' ">
+            AND (l.phone like "%"#{phone}"%" or t.phone like "%"#{phone}"%")
+        </if>
+        GROUP BY ke.uuid
+        ORDER BY ke.start_time asc
+        LIMIT #{startSize},#{pageSize}
+    </select>
+    <select id="countTodayCourse" resultType="java.lang.Integer"
+            parameterType="cn.onlyhi.client.dto.TodayCourseVo">
+        SELECT
+        COUNT(ke.id)
+        FROM
+        cp_course ke
+        LEFT JOIN leads l ON ke.leads_uuid = l.uuid
+        LEFT JOIN tc_teacher t ON ke.teacher_uuid = t.uuid
+        LEFT JOIN cp_course_order o ON ke.course_order_uuid = o.uuid
+        WHERE
+        ke.course_date >= CURDATE()
+        AND ke.course_date <![CDATA[ <= ]]> DATE_SUB(CURDATE(), INTERVAL - 1 DAY)
+        <if test="name != null and name != '' ">
+            AND (l.`name` like "%"#{name}"%" or t.tc_name like "%"#{name}"%")
+        </if>
+        <if test="phone != null and phone != '' ">
+            AND (l.phone like "%"#{phone}"%" or t.phone like "%"#{phone}"%")
+        </if>
+    </select>
+ <!--   <select id="selectNormalByUuid" parameterType="java.lang.String" resultMap="CpCourseResultMap">
+        select
+        <include refid="CpCourse_Column_List"/>
+        from cp_course
+        where uuid = #{uuid,jdbcType=VARCHAR}
+    </select>-->
+    <select id="findMinDate" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT course_date from cp_course where teacher_uuid=#{teacherUuid} ORDER BY course_date ASC  LIMIT 0,1;
+    </select>
+    <select id="selectNormalBack" parameterType="java.lang.String" resultMap="CpCourseResultMap">
+        select
+        <include refid="CpCourse_Column_List" />
+        from cp_course
+        where (class_status>0 and student_class_status>0) and uuid = #{uuid,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onlyhi.client.dao.ClassStatisticsMapper">
+    <resultMap id="StatisticsClassResultMap" type="cn.onlyhi.client.po.StatisticsClass">
+        <result column="student_name" jdbcType="VARCHAR" property="studentName"/>
+        <result column="grade" jdbcType="VARCHAR" property="grade"/>
+        <result column="teacher_name" jdbcType="VARCHAR" property="teacherName"/>
+        <result column="course_date" jdbcType="VARCHAR" property="courseDate"/>
+        <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
+        <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
+        <result column="teacher_record_time" jdbcType="VARCHAR" property="teacherRecordTime"/>
+        <result column="student_record_time" jdbcType="VARCHAR" property="studentRecordTime"/>
+        <result column="common_time" jdbcType="INTEGER" property="commonTime"/>
+        <result column="teacher_time" jdbcType="INTEGER" property="teacherTime"/>
+        <result column="student_time" jdbcType="INTEGER" property="studentTime"/>
+        <result column="room_uuid" jdbcType="VARCHAR" property="roomUuid"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+    <sql id="StatisticsClass_Column_List">
+        student_name, grade,teacher_name, course_date, start_time, end_time, teacher_enter_time,
+        teacher_out_time, student_enter_time, student_out_time, common_time, teacher_time,
+        student_time, room_uuid, remark
+    </sql>
+    <resultMap id="ClassStatisticsMap" type="cn.onlyhi.client.po.ClassStatistics">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="class_uuid" jdbcType="VARCHAR" property="classUuid"/>
+        <result column="student_name" jdbcType="VARCHAR" property="studentName"/>
+        <result column="grade" jdbcType="VARCHAR" property="grade"/>
+        <result column="teacher_name" jdbcType="VARCHAR" property="teacherName"/>
+        <result column="course_date" jdbcType="VARCHAR" property="courseDate"/>
+        <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
+        <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
+        <result column="teacher_first_time" jdbcType="DATE" property="teacherFirstTime"/>
+        <result column="teacher_last_time" jdbcType="DATE" property="teacherLastTime"/>
+        <result column="student_first_time" jdbcType="DATE" property="studentFirstTime"/>
+        <result column="student_last_time" jdbcType="DATE" property="studentLastTime"/>
+        <result column="common_length" jdbcType="INTEGER" property="commonLength"/>
+        <result column="teacher_length" jdbcType="INTEGER" property="teacherLength"/>
+        <result column="student_length" jdbcType="INTEGER" property="studentLength"/>
+        <result column="room_uuid" jdbcType="VARCHAR" property="roomUuid"/>
+        <result column="check_length" jdbcType="INTEGER" property="checkLength"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="checker" jdbcType="VARCHAR" property="checker"/>
+        <result column="check_time" jdbcType="TIMESTAMP" property="checkTime"/>
+    </resultMap>
+    <select id="statisticsClass" parameterType="String" resultMap="StatisticsClassResultMap">
+        SELECT DISTINCT
+        k1.student_name,
+        k1.grade,
+        k.teacher_name,
+        k.course_date,
+        k.start_time,
+        k.end_time,
+        k.teacher_record_time,
+        k1.student_record_time,
+        k.real_length,
+        k.teacher_length,
+        k.leads_length,
+        k.teacher_record_type,
+        k1.student_record_type,
+        k.class_room_uuid room_uuid
+        FROM
+        (
+        SELECT DISTINCT
+        tt.tc_name teacher_name,
+        c.course_date,
+        c.start_time,
+        c.end_time,
+        IF (
+        r.record_type = 1,
+        '进入房间',
+        '退出房间'
+        ) AS teacher_record_type,
+        FROM_UNIXTIME(
+        r.record_time / 1000,
+        '%Y-%m-%d %H:%i:%S'
+        ) teacher_record_time,
+        c.real_length,
+        c.teacher_length,
+        c.leads_length,
+        m.class_room_uuid
+        FROM
+        class_record r
+        LEFT JOIN class_room m ON r.class_room_uuid = m.class_room_uuid
+        LEFT JOIN cp_course c ON c.uuid = m.course_uuid
+        LEFT JOIN tc_teacher tt ON c.teacher_uuid = tt.uuid
+        WHERE
+        c.course_type = 1
+        AND c.course_date = #{today,jdbcType=VARCHAR}
+       --  AND c.course_date <![CDATA[ <= ]]> #{courseEndDate,jdbcType=VARCHAR}
+        AND r.user_type = 'TEACHER'
+        AND tt.tc_name NOT LIKE 'test%'
+        ) k
+        LEFT JOIN (
+        SELECT DISTINCT
+        l.`name` student_name,
+        l.grade grade,
+        c.course_date,
+        c.start_time,
+        c.end_time,
+        IF (
+        r.record_type = 1,
+        '进入房间',
+        '退出房间'
+        ) AS student_record_type,
+        FROM_UNIXTIME(
+        r.record_time / 1000,
+        '%Y-%m-%d %H:%i:%S'
+        ) student_record_time,
+        c.real_length,
+        c.teacher_length,
+        c.leads_length,
+        m.class_room_uuid
+        FROM
+        class_record r
+        LEFT JOIN class_room m ON r.class_room_uuid = m.class_room_uuid
+        LEFT JOIN cp_course c ON c.uuid = m.course_uuid
+        LEFT JOIN leads l ON c.leads_uuid = l.uuid
+        WHERE
+        c.course_type = 1
+        AND c.course_date = #{today,jdbcType=VARCHAR}
+      --   AND c.course_date <![CDATA[ <= ]]> #{courseEndDate,jdbcType=VARCHAR}
+        AND r.user_type = 'STUDENT'
+        AND l. NAME NOT LIKE 'test%'
+        ) k1 ON k.class_room_uuid = k1.class_room_uuid
+        WHERE
+        k.teacher_record_type = k1.student_record_type;
+    </select>
+    <insert id="batchSaveClass" parameterType="java.util.List">
+        insert into class_statistics
+        (class_uuid, student_name, grade, teacher_name, course_date,
+        start_time,end_time,teacher_first_time,teacher_last_time
+        ,student_first_time,student_last_time,common_length,teacher_length,student_length,room_uuid,check_length,remark,checker)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.classUuid,jdbcType=VARCHAR},
+            #{item.studentName,jdbcType=VARCHAR},
+            #{item.grade,jdbcType=VARCHAR},
+            #{item.teacherName,jdbcType=VARCHAR},
+            #{item.courseDate,jdbcType=VARCHAR},
+            #{item.startTime,jdbcType=VARCHAR},
+            #{item.endTime,jdbcType=VARCHAR},
+            #{item.teacherFirstTime,jdbcType=DATE},
+            #{item.teacherLastTime,jdbcType=DATE},
+            #{item.studentFirstTime,jdbcType=DATE},
+            #{item.studentLastTime,jdbcType=DATE},
+            #{item.commonLength,jdbcType=INTEGER},
+            #{item.teacherLength,jdbcType=INTEGER},
+            #{item.studentLength,jdbcType=INTEGER},
+            #{item.roomUuid,jdbcType=VARCHAR},
+            #{item.checkLength,jdbcType=INTEGER},
+            #{item.remark,jdbcType=VARCHAR},
+            #{item.checker,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <select id="findClass" parameterType="cn.onlyhi.client.dto.StatisticsClassVo" resultMap="ClassStatisticsMap">
+        select id, class_uuid, student_name, grade, teacher_name, course_date, start_time, end_time,
+        teacher_first_time, teacher_last_time, student_first_time, student_last_time, common_length,
+        teacher_length, student_length, room_uuid, check_length, remark, checker, check_time
+        from class_statistics
+        <where>
+            <if test="startDate !='' and startDate!=null">
+                and course_date >=#{startDate}
+            </if>
+            <if test="endDate !='' and endDate!=null">
+                and course_date <![CDATA[ <= ]]> #{endDate}
+            </if>
+            <if test="name !='' and name!=null">
+                (and teacher_name LIKE #{name}"%" or student_name LIKE #{name}"%")
+            </if>
+        </where>
+    </select>
+    <update id="updateClassById">
+      UPDATE class_statistics set check_length=#{checkLength},checker=#{checker} where id=#{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="exportClass" parameterType="java.lang.String" resultType="cn.onlyhi.client.po.ClassStatistics">
+        SELECT DISTINCT
+        k1.studentName,
+        k1.grade,
+        k.teacherName,
+        k.course_date courseDate,
+        k.start_time startTime,
+        k.end_time endTime,
+        k.teacherTime,
+        k1.studentTime,
+        k.real_length commonLength,
+        k.teacher_length teacherLength,
+        k.leads_length leadsLength,
+        k.teacherStatus,
+        k1.studentStatus,
+        k.class_room_uuid roomId
+        FROM
+        (
+        SELECT DISTINCT
+        tt.tc_name teacherName,
+        c.course_date,
+        c.start_time,
+        c.end_time,
+
+        IF (
+        r.record_type = 1,
+        '进入房间',
+        '退出房间'
+        ) AS teacherStatus,
+        FROM_UNIXTIME(
+        r.record_time / 1000,
+        '%Y-%m-%d %H:%i:%S'
+        ) 'teacherTime',
+        c.real_length,
+        c.teacher_length,
+        c.leads_length,
+        m.class_room_uuid
+        FROM
+        class_record r
+        LEFT JOIN class_room m ON r.class_room_uuid = m.class_room_uuid
+        LEFT JOIN cp_course c ON c.uuid = m.course_uuid
+        LEFT JOIN tc_teacher tt ON c.teacher_uuid = tt.uuid
+        WHERE
+        c.course_type = 1
+        AND c.course_date = #{courseDate}
+        AND r.user_type = 'TEACHER'
+        AND tt.tc_name NOT LIKE 'test%'
+        ) k
+        LEFT JOIN (
+        SELECT DISTINCT
+        l.`name` studentName,
+        l.grade,
+        c.course_date,
+        c.start_time,
+        c.end_time,
+        IF (
+        r.record_type = 1,
+        '进入房间',
+        '退出房间'
+        ) AS studentStatus,
+        FROM_UNIXTIME(
+        r.record_time / 1000,
+        '%Y-%m-%d %H:%i:%S'
+        ) 'studentTime',
+        c.real_length,
+        c.teacher_length,
+        c.leads_length,
+        m.class_room_uuid
+        FROM
+        class_record r
+        LEFT JOIN class_room m ON r.class_room_uuid = m.class_room_uuid
+        LEFT JOIN cp_course c ON c.uuid = m.course_uuid
+        LEFT JOIN leads l ON c.leads_uuid = l.uuid
+        WHERE
+        c.course_type = 1
+        AND c.course_date = #{courseDate}
+        AND r.user_type = 'STUDENT'
+        AND l. NAME NOT LIKE 'test%'
+        ) k1 ON k.class_room_uuid = k1.class_room_uuid
+        WHERE
+        k.teacherStatus = k1.studentStatus;
+    </select>
+</mapper>

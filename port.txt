@@ -1,0 +1,7 @@
+service使用双数端口号，rest使用单数端口号
+client-service=20002
+client-rest=20003
+onlyhi-file=20027
+client-record=20029
+client-conver=20031
+client-websocket=20035
