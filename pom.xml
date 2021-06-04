@@ -51,7 +51,7 @@
         <pdfbox.version>2.0.8</pdfbox.version>
         <jackson.version>2.8.2</jackson.version>
         <sqlite-jdbc.version>3.20.1</sqlite-jdbc.version>
-        <httpclient.version>4.5.3</httpclient.version>
+        <httpclient.version>4.5.13</httpclient.version>
         <httpcore.version>4.4.8</httpcore.version>
         <aliyun-sdk-oss.version>3.0.0</aliyun-sdk-oss.version>
         <poi.version>3.17</poi.version>
