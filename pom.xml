@@ -20,7 +20,7 @@
         <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <jedis.version>2.9.0</jedis.version>
-        <dubbo.version>2.5.3</dubbo.version>
+        <dubbo.version>2.6.9</dubbo.version>
         <zkclient.version>0.10</zkclient.version>
         <spring.version>4.3.13.RELEASE</spring.version>
         <aspectjweaver.version>1.8.9</aspectjweaver.version>
