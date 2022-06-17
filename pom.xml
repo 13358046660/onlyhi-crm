@@ -41,7 +41,7 @@
         <commons-pool.version>1.6</commons-pool.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
         <hibernate-validator.version>5.4.1.Final</hibernate-validator.version>
-        <fastjson.version>1.2.12</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <joda-time.version>2.9.4</joda-time.version>
         <javassist.version>3.21.0-GA</javassist.version>
         <pingpp-java.version>2.2.4</pingpp-java.version>
