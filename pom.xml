@@ -54,7 +54,7 @@
         <httpclient.version>4.5.3</httpclient.version>
         <httpcore.version>4.4.8</httpcore.version>
         <aliyun-sdk-oss.version>3.0.0</aliyun-sdk-oss.version>
-        <poi.version>3.17</poi.version>
+        <poi.version>4.1.1</poi.version>
         <poi-ooxml.version>3.17</poi-ooxml.version>
         <redis.version>2.1.4</redis.version>
     </properties>
