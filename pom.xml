@@ -14,7 +14,7 @@
     </modules>
 
     <properties>
-        <protobuf-java.version>3.4.0</protobuf-java.version>
+        <protobuf-java.version>3.16.3</protobuf-java.version>
         <netty-version>4.1.15.Final</netty-version>
         <jersey-bom.version>2.15</jersey-bom.version>
         <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
